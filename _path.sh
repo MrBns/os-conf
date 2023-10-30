@@ -3,6 +3,7 @@ export BUN_INSTALL="$HOME/.bun"
 
 export ANDROID_HOME=$HOME/.var/Android/Sdk
 export STARSHIP_CONFIG=~/.config/zfunc/starship/pastel-powerline.toml
+# export STARSHIP_CONFIG=~/.config/zfunc/starship/pure-preset.toml
 
 local BOB_NVIM=$HOME/.local/share/bob/nvim-bin
 local LOCAL_BIN=$HOME/.local/bin

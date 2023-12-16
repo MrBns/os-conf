@@ -28,6 +28,12 @@ alias project="j /mnt/Projects/project"
 # vim for nvim
 alias vim="nvim"
 
+#Bun (js runtime);
+bur(){
+  bun run $1 $2 $3 $4
+}
+
+
 # clipboard by xclip;
 copy() {
   echo $n | xclip -sel clip

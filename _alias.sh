@@ -29,10 +29,9 @@ alias project="j /mnt/Projects/project"
 alias vim="nvim"
 
 #Bun (js runtime);
-bur(){
-  bun run $1 $2 $3 $4
+bunr(){
+  bun run "$@"
 }
-
 
 # clipboard by xclip;
 copy() {
@@ -95,9 +94,19 @@ gitMain() {
   git config user.email "you@example.com"
   git config user.name "Your Name"
 }
+gitAlt() {
+  git config user.email "alt@example.com"
+  git config user.name "Your Name"
+}
+
 gitWork() {
   git config user.email "work@example.com"
   git config user.name "Your Name"
+}
+
+gitUser(){
+  git config --get user.name
+  git config --get user.email
 }
 
 killPort() {

@@ -19,6 +19,10 @@ alias vpnc="expressvpn connect"
 alias vpnd="expressvpn disconnect"
 alias vpns="expressvpn status"
 
+
+# for systemctl;
+alias systemctl='sudo systemctl'
+
 # adding sudo by default
 alias ufw='sudo ufw'
 
@@ -29,7 +33,7 @@ alias project="j /mnt/Projects/project"
 alias vim="nvim"
 
 #Bun (js runtime);
-bunr(){
+br(){
   bun run "$@"
 }
 
@@ -108,6 +112,16 @@ gitUser(){
   git config --get user.name
   git config --get user.email
 }
+
+# initialization stuff;
+init_cp(){
+  mkdir  $cwd()+'.bin'
+  touch 'input.txt'
+  touch 'output.txt'
+}
+
+
+
 
 killPort() {
   sudo kill -9 $(sudo lsof -t -i:$1)

@@ -15,15 +15,18 @@ export MOJO_BIN="$MODULAR_HOME/pkg/packages.modular.com_mojo/bin"
 export FLYCTL_INSTALL="/home/bns/.fly"
 # export PATH=""
 
+
 # NVM;
 export NVM_DIR="$HOME/.nvm"
 
 
-local BOB_NVIM=$HOME/.local/share/bob/nvim-bin
-local LOCAL_BIN=$HOME/.local/bin
-local GOLANG_BIN=/usr/local/go/bin
-local BUN_BIN=$BUN_INSTALL/bin
-local DENO_BIN=$DENO_INSTALL/bin
+# local BOB_NVIM=$HOME/.local/share/bob/nvim-bin
+
+local LOCAL_BIN=$HOME/.local/bin # Local BIN
+local GOLANG_BIN=/usr/local/go/bin # Golang 
+local BUN_BIN=$BUN_INSTALL/bin # Bun 
+local DENO_BIN=$DENO_INSTALL/bin # Deno
+
 export GOPATH=$HOME/.local/bin/go
 
 # included (local bin, nvim-bin[by-bob] , golang bin , deno bin, bun bin)

@@ -30,7 +30,8 @@ alias ufw='sudo ufw'
 alias project="j /mnt/Projects/project"
 
 # vim for nvim
-alias vim="nvim"
+alias nvim="/opt/nvim-linux64/bin/nvim"
+alias vim="/opt/nvim-linux64/bin/nvim"
 
 #Bun (js runtime);
 br(){

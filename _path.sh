@@ -3,7 +3,7 @@ export BUN_INSTALL="$HOME/.bun"
 
 export ANDROID_HOME=$HOME/.var/Android/Sdk
 
-export STARSHIP_CONFIG=~/.config/zfunc/starship/pastel-powerline.toml
+export STARSHIP_CONFIG=~/.config/zsh-config/starship/pastel-powerline.toml
 # export STARSHIP_CONFIG=~/.config/zfunc/starship/pure-preset.toml
 
 # Moduler Mojo
@@ -14,6 +14,10 @@ export MOJO_BIN="$MODULAR_HOME/pkg/packages.modular.com_mojo/bin"
 #Fly CTL
 export FLYCTL_INSTALL="/home/bns/.fly"
 # export PATH=""
+
+# NVM;
+export NVM_DIR="$HOME/.nvm"
+
 
 local BOB_NVIM=$HOME/.local/share/bob/nvim-bin
 local LOCAL_BIN=$HOME/.local/bin

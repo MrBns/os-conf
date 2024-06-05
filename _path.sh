@@ -27,6 +27,7 @@ local GOLANG_BIN=/usr/local/go/bin # Golang
 local BUN_BIN=$BUN_INSTALL/bin # Bun 
 local DENO_BIN=$DENO_INSTALL/bin # Deno
 
+export PNPM_HOME=$HOME/.var/pnpm #pnpm
 export GOPATH=$HOME/.local/bin/go
 
 # included (local bin, nvim-bin[by-bob] , golang bin , deno bin, bun bin)

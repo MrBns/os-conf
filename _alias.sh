@@ -2,9 +2,9 @@ alias python=python3
 alias py=python3
 
 # exa alias for ll
-alias ls="exa --color=always --icons --group-directories-first --git"
-alias l="exa --color=always --icons --all --group-directories-first --git"
-alias ll="exa --oneline --long --color=always --icons --all --group-directories-first --git"
+alias ls="eza --color=always --icons --group-directories-first --git"
+alias l="eza --color=always --icons --all --group-directories-first --git"
+alias ll="eza --oneline --long --color=always --icons --all --group-directories-first --git"
 
 # Base Directory
 BASE="$HOME/.config/zsh-config"

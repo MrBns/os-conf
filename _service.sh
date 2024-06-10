@@ -1,3 +1,7 @@
+
+# Cargo Script
+source "$HOME/.cargo/env"
+
 #Evulating Starship ZSH;
 eval "$(starship init zsh)"
 

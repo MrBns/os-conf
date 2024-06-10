@@ -6,12 +6,19 @@ alias ls="exa --color=always --icons --group-directories-first --git"
 alias l="exa --color=always --icons --all --group-directories-first --git"
 alias ll="exa --oneline --long --color=always --icons --all --group-directories-first --git"
 
-# some alias for sudo;
-alias sapt="sudo apt-get"
-alias sagi="sudo apt-get install"
-alias sau="sudo apt-get update"
-alias sadistu="sudo apt-get dist-upgrade"
-alias saug="sudo apt-get upgrade"
+# Base Directory
+BASE="$HOME/.config/zsh-config"
+
+
+#platform spacific alias;
+OS_ID=$(grep ^ID= /etc/os-release | cut -d'=' -f2 | tr -d '"')
+
+# Check if the OS is Fedora or Ubuntu
+if [[ "$OS_ID" == "ubuntu" ]]; then
+  source $BASE"/platform-specific/ubuntu/alias.sh"
+elif [[ "$OS_ID" == "fedora" ]]; then
+  source $BASE"/platform-specific/fedora/alias.sh"
+fi
 
 #ExrpssVpn Alias
 alias vpn='expressvpn'
@@ -116,8 +123,8 @@ gitUser(){
 
 # initialization stuff;
 init_cp(){
-  mkdir  $cwd()+'.bin'
-  touch 'input.txt'
+  mkdir  $cwd+'.bin'
+  touch "input.txt"
   touch 'output.txt'
 }
 

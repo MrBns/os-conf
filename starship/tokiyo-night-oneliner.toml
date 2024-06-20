@@ -1,6 +1,7 @@
 format = """
 [░▒▓](#a3aed2)\
-[  ](bg:#a3aed2 fg:#090c0c)\
+[ 󰁥 ](bg:#a3aed2 fg:#394D8E)\
+$username\
 [](bg:#769ff0 fg:#a3aed2)\
 $directory\
 [](fg:#769ff0 bg:#394260)\
@@ -16,7 +17,7 @@ $time\
 [ ](fg:#1d2230)"""
 
 [directory]
-style = "fg:#e3e5e5 bg:#769ff0"
+style = "fg:#0b0b0b bg:#769ff0 italic"
 format = "[ $path ]($style)"
 truncation_length = 3
 truncation_symbol = "…/"
@@ -26,6 +27,14 @@ truncation_symbol = "…/"
 "Downloads" = " "
 "Music" = " "
 "Pictures" = " "
+
+
+[username]
+show_always = true
+style_user = "bg:#a3aed2 fg:#394D8E bold"
+style_root = "bg:#a3aed2"
+format = '[$user ]($style)'
+disabled = false
 
 [git_branch]
 symbol = ""

@@ -28,7 +28,8 @@ alias vpns="expressvpn status"
 
 
 # for systemctl;
-alias systemctl='sudo systemctl'
+# alias systemctl='sudo systemctl'
+alias syctl="sudo systemctl"
 
 # adding sudo by default
 alias ufw='sudo ufw'
@@ -36,9 +37,6 @@ alias ufw='sudo ufw'
 # Jumping
 alias project="j /mnt/Projects/project"
 
-# vim for nvim
-alias nvim="/opt/nvim-linux64/bin/nvim"
-alias vim="/opt/nvim-linux64/bin/nvim"
 
 #Bun (js runtime);
 br(){

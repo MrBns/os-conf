@@ -1,9 +1,9 @@
-config_dir_name="zsh-config"
+export ZC_BASE="$HOME/.config/zsh-config"
 
 
 # Loading Scripts
-source $HOME/.config/$config_dir_name/_path.sh
-source $HOME/.config/$config_dir_name/_service.sh
-source $HOME/.config/$config_dir_name/_alias.sh
-source $HOME/.config/$config_dir_name/_options.sh
+source $ZC_BASE/_path.sh
+source $ZC_BASE/_service.sh
+source $ZC_BASE/_alias.sh
+source $ZC_BASE/_options.sh
 

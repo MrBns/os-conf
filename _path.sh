@@ -3,7 +3,17 @@ export BUN_INSTALL="$HOME/.bun"
 
 export ANDROID_HOME=$HOME/.var/Android/Sdk
 
-export STARSHIP_CONFIG=~/.config/zsh-config/starship/pastel-powerline.toml
+
+# Starship Promt Setting
+parent_process=$(ps -o comm= -p $(ps -o ppid= -p $$))
+
+if [[ "$parent_process" == "warp" ]]; then
+    export STARSHIP_CONFIG="$ZC_BASE/starship/tokiyo-night-oneliner.toml"
+else
+    export STARSHIP_CONFIG="$ZC_BASE/starship/tokiyo-night.toml"
+fi
+
+# export STARSHIP_CONFIG="$ZC_BASE/starship/tokio-night-edited.toml"
 # export STARSHIP_CONFIG=~/.config/zfunc/starship/pure-preset.toml
 
 # Moduler Mojo

@@ -10,7 +10,7 @@ parent_process=$(ps -o comm= -p $(ps -o ppid= -p $$))
 if [[ "$parent_process" == "warp" ]]; then
     export STARSHIP_CONFIG="$ZC_BASE/starship/gruvbox-rainbow-present.warp.toml"
 else
-    export STARSHIP_CONFIG="$ZC_BASE/starship/tokiyo-night-oneliner.toml"
+    export STARSHIP_CONFIG="$ZC_BASE/starship/tokiyo-night.toml"
     
 fi
 

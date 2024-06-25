@@ -9,10 +9,6 @@ alias ll="eza --oneline --long --color=always --icons --all --group-directories-
 # Base Directory
 BASE="$HOME/.config/zsh-config"
 
-
-#platform spacific alias;
-OS_ID=$(grep ^ID= /etc/os-release | cut -d'=' -f2 | tr -d '"')
-
 # Check if the OS is Fedora or Ubuntu
 if [[ "$OS_ID" == "ubuntu" ]]; then
   source $BASE"/platform-specific/ubuntu/alias.sh"

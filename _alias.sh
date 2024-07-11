@@ -25,7 +25,7 @@ alias vpns="expressvpn status"
 
 # for systemctl;
 # alias systemctl='sudo systemctl'
-alias syctl="sudo systemctl"
+alias sctl="sudo systemctl"
 
 # adding sudo by default
 alias ufw='sudo ufw'

@@ -14,6 +14,8 @@ else
     
 fi
 
+
+
 # export STARSHIP_CONFIG="$ZC_BASE/starship/tokio-night-edited.toml"
 # export STARSHIP_CONFIG=~/.config/zfunc/starship/pure-preset.toml
 

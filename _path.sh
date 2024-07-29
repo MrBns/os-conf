@@ -42,9 +42,10 @@ local DENO_BIN=$DENO_INSTALL/bin # Deno
 
 export PNPM_HOME=$HOME/.var/pnpm #pnpm
 export GOPATH=$HOME/.local/bin/go
+local flutter_bin="/usr/local/flutter/bin"
 
 # included (local bin, nvim-bin[by-bob] , golang bin , deno bin, bun bin)
 PATH1=$GOPATH/bin:$BOB_NVIM:$LOCAL_BIN:$GOLANG_BIN:$DENO_BIN:$BUN_BIN:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools
-PATH2=$FLYCTL_INSTALL/bin:$MOJO_BIN:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$PNPM_HOME
+PATH2=$FLYCTL_INSTALL/bin:$MOJO_BIN:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$PNPM_HOME:$flutter_bin
 
 export PATH=$PATH1:$PATH2:$PATH

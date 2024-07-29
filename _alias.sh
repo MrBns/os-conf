@@ -39,6 +39,12 @@ br(){
   bun run "$@"
 }
 
+#Deno (js Runtime)
+dt(){
+  deno task "$@"
+}
+
+
 # clipboard by xclip;
 copy() {
   echo $n | xclip -sel clip

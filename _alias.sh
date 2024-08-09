@@ -83,6 +83,23 @@ jcode() {
   cd $PREV_DIR
 }
 
+jzed() {
+  PREV_DIR=$(pwd)
+
+  ji "$1"
+
+  if [ $? -ne 0 ]; then
+    echo "Stopped by User"
+    return 130
+  fi
+
+  wait
+  zed $(pwd)
+
+  wait
+  cd $PREV_DIR
+}
+
 jnvim() {
   PREV_DIR=$(pwd)
 

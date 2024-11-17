@@ -1,6 +1,6 @@
 export DENO_INSTALL="$HOME/.deno"
 export BUN_INSTALL="$HOME/.bun"
-
+export HOMEBREW_BIN="/home/linuxbrew/.linuxbrew/bin"
 export ANDROID_HOME=$HOME/.var/Android/Sdk
 
 
@@ -8,7 +8,7 @@ export ANDROID_HOME=$HOME/.var/Android/Sdk
 parent_process=$(ps -o comm= -p $(ps -o ppid= -p $$))
 
 if [[ "$parent_process" == "warp" ]]; then
-    export STARSHIP_CONFIG="$ZC_BASE/starship/gruvbox-rainbow-present.warp.toml"
+    export STARSHIP_CONFIG="$ZC_BASE/starship/tokiyo-night.toml"
 else
     export STARSHIP_CONFIG="$ZC_BASE/starship/tokiyo-night.toml"
     
@@ -46,6 +46,6 @@ local flutter_bin="/usr/local/flutter/bin"
 
 # included (local bin, nvim-bin[by-bob] , golang bin , deno bin, bun bin)
 PATH1=$GOPATH/bin:$BOB_NVIM:$LOCAL_BIN:$GOLANG_BIN:$DENO_BIN:$BUN_BIN:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools
-PATH2=$FLYCTL_INSTALL/bin:$MOJO_BIN:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$PNPM_HOME:$flutter_bin
+PATH2=$FLYCTL_INSTALL/bin:$MOJO_BIN:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$PNPM_HOME:$flutter_bin:$HOMEBREW_BIN
 
 export PATH=$PATH1:$PATH2:$PATH

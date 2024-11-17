@@ -11,6 +11,7 @@ alias sadg="sudo apt-get dist-upgrade"
 # alias vim="/opt/nvim-linux64/bin/nvim"
 
 # sudo nala - Alias
+alias sna="sudo nala"
 alias snai="sudo nala install --fix-broken"
 alias snais="sudo nala install --fix-broken --install-suggests"
 alias snau="sudo nala update"

@@ -1,0 +1,95 @@
+format = """
+[░▒▓]( fg:green)\
+[ 󰁥 ](bg:green fg:fg_white)\
+$username\
+[](bg:white fg:green)\
+$directory\
+[](fg:white bg:red)\
+$git_branch\
+$git_status\
+[](fg:red bg:black)\
+$time\
+[](fg:black)\
+[╌](fg:#5C5C5C)\
+[](fg:nodejs_bg)\
+$nodejs\
+$rust\
+$golang\
+$deno\
+[](fg:golang_bg)\
+\n$character"""
+
+palette = "tokio_night"
+
+[palettes.tokio_night]
+fg_green = '#007a3d'
+fg_red = '#CE1126'
+fg_white = '#ffffff'
+green = '#007A3D'
+white = '#ffffff'
+red = '#CE1126'
+black = '#000000'
+nodejs_bg = "#003C1E"
+nodejs_fg = "#E8FFF3"
+deno_bg = "#F6F6F6 "
+deno_fg = "#000000"
+rust_bg = "#861500"
+rust_fg = "#CA2103"
+golang_bg = "#004758"
+golang_fg = "#E1F9FF"
+color_orange = '#d65d0e'
+color_purple = '#b16286'
+color_yellow = '#d79921'
+
+
+[directory]
+style = "fg:black bg:white italic bold"
+format = "[ $path ]($style)"
+truncation_length = 3
+truncation_symbol = ""
+
+[directory.substitutions]
+"Documents" = "󰈙/"
+"Downloads" = " "
+"Music" = " /"
+"Pictures" = " /"
+"~" = " "
+
+
+[username]
+show_always = true
+style_user = "bg:green fg:white bold"
+style_root = "bg:green fg:white bold"
+format = '[$user ]($style)'
+disabled = false
+
+[git_branch]
+symbol = ""
+style = "fg:white bg:red"
+format = '[[ $symbol $branch ](fg:white bg:red)]($style)'
+
+[git_status]
+style = "fg:white bg:red"
+format = '[[($all_status$ahead_behind )](fg:white bg:red)]($style)'
+
+[nodejs]
+symbol = ""
+style = "bg:nodejs_bg"
+format = '[[ $symbol ($version) ](fg:nodejs_fg bg:nodejs_bg)]($style)'
+
+[rust]
+symbol = ""
+style = "bg:rust_bg"
+format = '[[ $symbol ($version) ](fg:rust_fg bg:rust_bg)]($style)'
+
+[golang]
+symbol = ""
+style = "bg:golang_bg"
+format = '[[ $symbol ($version) ](fg:golang_fg bg:golang_bg)]($style)'
+
+
+[time]
+disabled = false
+time_format = "%R"                                  # Hour:Minute Format
+style = "bg:black fg:white"
+format = '[[  $time ](fg:white bg:black)]($style)'

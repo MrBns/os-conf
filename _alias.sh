@@ -146,7 +146,16 @@ init_cp(){
 }
 
 
+poweroff(){
+  sudo systemctl poweroff
+}
+reboot(){
+  sudo systemctl reboot
+}
 
+suspend(){
+  sudo systemctl suspend
+}
 
 killPort() {
   sudo kill -9 $(sudo lsof -t -i:$1)

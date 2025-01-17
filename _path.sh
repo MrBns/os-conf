@@ -4,6 +4,12 @@ export HOMEBREW_BIN="/home/linuxbrew/.linuxbrew/bin"
 export ANDROID_HOME=$HOME/.var/Android/Sdk
 
 
+export ENCORE_INSTALL="/home/bns/.encore"
+export ENCORE_BIN="$ENCORE_INSTALL/bin"
+
+
+
+
 # Starship Promt Setting
 parent_process=$(ps -o comm= -p $(ps -o ppid= -p $$))
 
@@ -45,7 +51,7 @@ export GOPATH=$HOME/.local/bin/go
 local flutter_bin="/usr/local/flutter/bin"
 
 # included (local bin, nvim-bin[by-bob] , golang bin , deno bin, bun bin)
-PATH1=$GOPATH/bin:$BOB_NVIM:$LOCAL_BIN:$GOLANG_BIN:$DENO_BIN:$BUN_BIN:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools
+PATH1=$GOPATH/bin:$BOB_NVIM:$LOCAL_BIN:$GOLANG_BIN:$DENO_BIN:$BUN_BIN:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$ENCORE_BIN
 PATH2=$FLYCTL_INSTALL/bin:$MODULAR_BIN:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$PNPM_HOME:$flutter_bin:$HOMEBREW_BIN
 
 export PATH=$PATH1:$PATH2:$PATH

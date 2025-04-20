@@ -3,6 +3,9 @@ export BUN_INSTALL="$HOME/.bun"
 export HOMEBREW_BIN="/home/linuxbrew/.linuxbrew/bin"
 export ANDROID_HOME=$HOME/.var/Android/Sdk
 export ZIG_HOME="/usr/local/zig"
+export VLANG_HOME="/usr/local/v"
+export NIM_LANG_BIN=/home/bns/.nimble/bin
+export ODIN_LANG_HOME=/usr/local/Odin
 
 
 export ENCORE_INSTALL="/home/bns/.encore"
@@ -52,7 +55,7 @@ export GOPATH=$HOME/.local/bin/go
 local flutter_bin="/usr/local/flutter/bin"
 
 # included (local bin, nvim-bin[by-bob] , golang bin , deno bin, bun bin)
-PATH1=$GOPATH/bin:$BOB_NVIM:$LOCAL_BIN:$GOLANG_BIN:$DENO_BIN:$BUN_BIN:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$ENCORE_BIN
-PATH2=$FLYCTL_INSTALL/bin:$MODULAR_BIN:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$PNPM_HOME:$flutter_bin:$HOMEBREW_BIN:$ZIG_HOME
+PATH1=$GOPATH/bin:$BOB_NVIM:$LOCAL_BIN:$GOLANG_BIN:$DENO_BIN:$BUN_BIN:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$ENCORE_BIN:$VLANG_HOME:$ODIN_LANG_HOME
+PATH2=$FLYCTL_INSTALL/bin:$MODULAR_BIN:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$PNPM_HOME:$flutter_bin:$HOMEBREW_BIN:$ZIG_HOME:$NIM_LANG_BIN
 
 export PATH=$PATH1:$PATH2:$PATH

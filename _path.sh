@@ -4,8 +4,10 @@ export HOMEBREW_BIN="/home/linuxbrew/.linuxbrew/bin"
 export ANDROID_HOME=$HOME/.var/Android/Sdk
 export ZIG_HOME="/usr/local/zig"
 export VLANG_HOME="/usr/local/v"
-export NIM_LANG_BIN=/home/bns/.nimble/bin
+export NIM_LANG_BIN="$HOME/.nimble/bin"
 export ODIN_LANG_HOME=/usr/local/Odin
+export PHP_HERD_LITE_BIN="$HOME/.config/herd-lite/bin"
+local GOLANG_BIN="/usr/local/go/bin" # Golang
 
 
 export ENCORE_INSTALL="/home/bns/.encore"
@@ -46,7 +48,6 @@ export NVM_DIR="$HOME/.nvm"
 local NVIM_BIN=/opt/nvim-linux-x86_64/bin
 
 local LOCAL_BIN=$HOME/.local/bin # Local BIN
-local GOLANG_BIN=/usr/local/go/bin # Golang
 local BUN_BIN=$BUN_INSTALL/bin # Bun
 local DENO_BIN=$DENO_INSTALL/bin # Deno
 

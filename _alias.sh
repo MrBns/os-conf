@@ -7,7 +7,7 @@ alias l="eza --color=always --icons --all --group-directories-first --git"
 alias ll="eza --oneline --long --color=always --icons --all --group-directories-first --git"
 
 # Base Directory
-BASE="$HOME/.config/zsh-config"
+BASE="$HOME/.config/os-conf"
 
 # Check if the OS is Fedora or Ubuntu
 if [[ "$OS_ID" == "ubuntu" ]]; then

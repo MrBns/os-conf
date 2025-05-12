@@ -20,15 +20,15 @@ export ENCORE_BIN="$ENCORE_INSTALL/bin"
 parent_process=$(ps -o comm= -p $(ps -o ppid= -p $$))
 
 if [[ "$parent_process" == "warp" ]]; then
-    export STARSHIP_CONFIG="$ZC_BASE/starship/tokiyo-night_palestine.toml"
+    export STARSHIP_CONFIG="$OC_BASE/starship/tokiyo-night_palestine.toml"
 else
-    export STARSHIP_CONFIG="$ZC_BASE/starship/tokiyo-night_palestine.toml"
+    export STARSHIP_CONFIG="$OC_BASE/starship/tokiyo-night_palestine.toml"
 
 fi
 
 
 
-# export STARSHIP_CONFIG="$ZC_BASE/starship/tokio-night-edited.toml"
+# export STARSHIP_CONFIG="$OC_BASE/starship/tokio-night-edited.toml"
 # export STARSHIP_CONFIG=~/.config/zfunc/starship/pure-preset.toml
 
 # Moduler Mojo

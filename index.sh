@@ -1,10 +1,8 @@
-export ZC_BASE="$HOME/.config/zsh-config"
-
+export OC_BASE="$HOME/.config/os-conf"
 
 # Loading Scripts
-source $ZC_BASE/_path.sh
-source $ZC_BASE/_service.sh
-source $ZC_BASE/_alias.sh
-source $ZC_BASE/_options.sh
-source $ZC_BASE/_project_opener.sh
-
+source $OC_BASE/_path.sh
+source $OC_BASE/_service.sh
+source $OC_BASE/_alias.sh
+source $OC_BASE/_options.sh
+source $OC_BASE/_project_opener.sh

@@ -2,8 +2,13 @@
   --vscode-font-family: "jetbrains mono", monospace, sans-serif;
 }
 
-.monaco-workbench,
-.view-lines {
+.monaco-workbench {
+  font-family: var(--vscode-font-family) !important;
+}
+
+.scm-editor .view-lines,
+.scm-editor .editorPlaceholder,
+.interactive-input-editor .view-lines {
   font-family: var(--vscode-font-family) !important;
 }
 

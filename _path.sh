@@ -8,6 +8,8 @@ export NIM_LANG_BIN="$HOME/.nimble/bin"
 export ODIN_LANG_HOME=/usr/local/Odin
 export PHP_HERD_LITE_BIN="$HOME/.config/herd-lite/bin"
 local GOLANG_BIN="/usr/local/go/bin" # Golang
+local DART_SDK_BIN="/usr/local/dart-sdk/bin"
+
 
 
 export ENCORE_INSTALL="/home/bns/.encore"
@@ -56,7 +58,7 @@ export GOPATH=$HOME/.local/bin/go
 local flutter_bin="/usr/local/flutter/bin"
 
 # included (local bin, nvim-bin[by-bob] , golang bin , deno bin, bun bin)
-PATH1=$GOPATH/bin:$BOB_NVIM:$LOCAL_BIN:$GOLANG_BIN:$DENO_BIN:$BUN_BIN:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$ENCORE_BIN:$VLANG_HOME:$ODIN_LANG_HOME
+PATH1=$GOPATH/bin:$BOB_NVIM:$LOCAL_BIN:$GOLANG_BIN:$DENO_BIN:$BUN_BIN:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$ENCORE_BIN:$VLANG_HOME:$ODIN_LANG_HOME:$DART_SDK_BIN
 PATH2=$FLYCTL_INSTALL/bin:$MODULAR_BIN:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$PNPM_HOME:$flutter_bin:$HOMEBREW_BIN:$ZIG_HOME:$NIM_LANG_BIN:$NVIM_BIN
 
 export PATH=$PATH1:$PATH2:$PATH

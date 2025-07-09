@@ -22,6 +22,10 @@ alias vpnc="expressvpn connect"
 alias vpnd="expressvpn disconnect"
 alias vpns="expressvpn status"
 
+# Rust Cargo Alias
+alias cr="cargo run"
+alias crq="cargo run -q"
+alias crr="cargo run  --  "
 
 # for systemctl;
 # alias systemctl='sudo systemctl'
@@ -65,6 +69,9 @@ jip() {
   ji $1
   pwd
 }
+
+#  Code insider
+alias codei="code-insiders"
 
 jcode() {
   PREV_DIR=$(pwd)

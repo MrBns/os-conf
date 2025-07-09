@@ -11,6 +11,11 @@ local GOLANG_BIN="/usr/local/go/bin" # Golang
 local DART_SDK_BIN="/usr/local/dart-sdk/bin"
 
 
+# swift 
+export SWIFTLY_HOME_DIR="/home/bns/.local/share/swiftly"
+export SWIFTLY_BIN_DIR="/home/bns/.local/share/swiftly/bin"
+export SWIFTLY_TOOLCHAINS_DIR="/home/bns/.local/share/swiftly/toolchains"
+
 
 export ENCORE_INSTALL="/home/bns/.encore"
 export ENCORE_BIN="$ENCORE_INSTALL/bin"
@@ -60,5 +65,7 @@ local flutter_bin="/usr/local/flutter/bin"
 # included (local bin, nvim-bin[by-bob] , golang bin , deno bin, bun bin)
 PATH1=$GOPATH/bin:$BOB_NVIM:$LOCAL_BIN:$GOLANG_BIN:$DENO_BIN:$BUN_BIN:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$ENCORE_BIN:$VLANG_HOME:$ODIN_LANG_HOME:$DART_SDK_BIN
 PATH2=$FLYCTL_INSTALL/bin:$MODULAR_BIN:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$PNPM_HOME:$flutter_bin:$HOMEBREW_BIN:$ZIG_HOME:$NIM_LANG_BIN:$NVIM_BIN
+PATH3=$SWIFTLY_BIN_DIR
 
-export PATH=$PATH1:$PATH2:$PATH
+
+export PATH=$PATH1:$PATH2:$PATH3:$PATH

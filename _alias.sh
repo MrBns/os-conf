@@ -6,7 +6,7 @@ alias ls="eza --color=always --icons --group-directories-first --git"
 alias l="eza --color=always --icons --all --group-directories-first --git"
 alias ll="eza --oneline --long --color=always --icons --all --group-directories-first --git"
 
-# Base Directory
+# Base Director
 BASE="$HOME/.config/os-conf"
 
 # Check if the OS is Fedora or Ubuntu
@@ -36,6 +36,10 @@ alias ufw='sudo ufw'
 
 # Jumping
 alias project="j /mnt/Projects/project"
+
+
+#neovim alias
+# alias nvim="/opt/nvim-linux-x86_64/bin/nvim"
 
 
 #Bun (js runtime);

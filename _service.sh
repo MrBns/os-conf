@@ -11,11 +11,19 @@ eval "$(zoxide init zsh --cmd j)"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 
+# Check if mise binary exists and run it if available
+if command -v mise >/dev/null 2>&1; then
+    eval "$(mise activate zsh)"
+fi
 
 
 if [ -f "/home/bns/.nix-profile/etc/profile.d/nix.sh" ]; then
     source "/home/bns/.nix-profile/etc/profile.d/nix.sh"
 fi
+
+
+
+
 
 # # Function to check if a file exists
 # file_exists() {

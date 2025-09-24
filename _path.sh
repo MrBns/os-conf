@@ -66,7 +66,7 @@ local flutter_bin="/usr/local/flutter/bin"
 
 # included (local bin, nvim-bin[by-bob] , golang bin , deno bin, bun bin)
 PATH1=$GOPATH/bin:$BOB_NVIM:$LOCAL_BIN:$GOLANG_BIN:$DENO_BIN:$BUN_BIN:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$ENCORE_BIN:$VLANG_HOME:$ODIN_LANG_HOME
-PATH2=$FLYCTL_INSTALL/bin:$MODULAR_BIN:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$PNPM_HOME:$flutter_bin:$HOMEBREW_BIN:$ZIG_HOME:$NIM_LANG_BIN:$NVIM_BIN
+PATH2=$FLYCTL_INSTALL/bin:$MODULAR_BIN:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$PNPM_HOME:$flutter_bin:$HOMEBREW_BIN:$ZIG_HOME:$NIM_LANG_BIN
 PATH3=$SWIFTLY_BIN_DIR:$DART_SDK_BIN
 
 

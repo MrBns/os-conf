@@ -77,6 +77,8 @@ jip() {
 #  Code insider
 alias codei="code-insiders"
 
+
+# Open Zoxide history folder with code
 jcode() {
   PREV_DIR=$(pwd)
 
@@ -94,6 +96,7 @@ jcode() {
   cd $PREV_DIR
 }
 
+# Open Zoxide history folder with zed
 jzed() {
   PREV_DIR=$(pwd)
 
@@ -111,6 +114,7 @@ jzed() {
   cd $PREV_DIR
 }
 
+# Open Zoxide Hisotry folder with Nvim
 jnvim() {
   PREV_DIR=$(pwd)
 
@@ -125,7 +129,30 @@ jnvim() {
   nvim $(pwd)
 }
 
+#Open folder from Zoxide history
+jopen() {
+  PREV_DIR=$(pwd)
+
+  ji "$1"
+
+  if [ $? -ne 0 ]; then
+    echo "Stopped by User"
+    return 130
+  fi
+
+  wait
+  xdg-open $(pwd)
+}
+
+
+
+
 # Alias for git
+
+gsub(){
+    git submodule $@
+}
+
 gac() {
   git add $1
   git commit -m "$2"
@@ -150,7 +177,7 @@ gitUser(){
 }
 
 # initialization stuff;
-init_cp(){
+init_ctp(){
   mkdir  $cwd+'.bin'
   touch "input.txt"
   touch 'output.txt'

@@ -49,11 +49,11 @@ truncation_length = 3
 truncation_symbol = ""
 
 [directory.substitutions]
-"Documents" = "󰈙/"
-"Downloads" = " "
-"Music" = " /"
-"Pictures" = " /"
-"~" = " "
+"Documents" = " 󰈙 "
+"Downloads" = "   "
+"Music" = "   "
+"Pictures" = "  "
+"~" = "   "
 
 
 [username]
@@ -73,7 +73,7 @@ style = "fg:white bg:red"
 format = '[[($all_status$ahead_behind )](fg:white bg:red)]($style)'
 
 [nodejs]
-symbol = ""
+symbol = "󰎙"
 style = "bg:nodejs_bg"
 format = '[[ $symbol ($version) ](fg:nodejs_fg bg:nodejs_bg)]($style)'
 
@@ -86,6 +86,11 @@ format = '[[ $symbol ($version) ](fg:rust_fg bg:rust_bg)]($style)'
 symbol = ""
 style = "bg:golang_bg"
 format = '[[ $symbol ($version) ](fg:golang_fg bg:golang_bg)]($style)'
+
+# [bun]
+# symbol = ""
+# style:"bg:"
+
 
 
 [time]

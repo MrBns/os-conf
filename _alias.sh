@@ -90,7 +90,7 @@ jcode() {
   fi
 
   wait
-  code $(pwd)
+  code "$(pwd)"
 
   wait
   cd $PREV_DIR
@@ -108,7 +108,7 @@ jzed() {
   fi
 
   wait
-  zed $(pwd)
+  zed "$(pwd)"
 
   wait
   cd $PREV_DIR
@@ -126,7 +126,7 @@ jnvim() {
   fi
 
   wait
-  nvim $(pwd)
+  nvim "$(pwd)"
 }
 
 #Open folder from Zoxide history
@@ -141,7 +141,7 @@ jopen() {
   fi
 
   wait
-  xdg-open $(pwd)
+  xdg-open "$(pwd)"
 }
 
 

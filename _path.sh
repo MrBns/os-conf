@@ -1,73 +1,83 @@
-export DENO_INSTALL="$HOME/.deno"
+# ---------------------------------------------------------------------------
+# Tool environment
+# Only variables a tool actually reads at runtime belong here.
+# Anything that exists purely to build PATH lives in the array below instead.
+# ---------------------------------------------------------------------------
+export ANDROID_HOME="$HOME/.var/Android/Sdk"
 export BUN_INSTALL="$HOME/.bun"
-export HOMEBREW_BIN="/home/linuxbrew/.linuxbrew/bin"
-export ANDROID_HOME=$HOME/.var/Android/Sdk
-export ZIG_HOME="/usr/local/zig"
-export VLANG_HOME="$HOME/.local/v"
-export NIM_LANG_BIN="$HOME/.nimble/bin"
-export ODIN_LANG_HOME=/usr/local/Odin
-export PHP_HERD_LITE_BIN="$HOME/.config/herd-lite/bin"
-local GOLANG_BIN="/usr/local/go/bin" # Golang
-local DART_SDK_BIN="/usr/local/dart-sdk/bin"
-
+export DENO_INSTALL="$HOME/.deno"
+export NVM_DIR="$HOME/.nvm"
+export PNPM_HOME="$HOME/.var/pnpm"
+export GOPATH="$HOME/.local/bin/go"
+export MODULAR_HOME="$HOME/.modular"      # Modular / Mojo
+export FLYCTL_INSTALL="$HOME/.fly"        # Fly CTL
+export ENCORE_INSTALL="$HOME/.encore"
 
 # swift
-export SWIFTLY_HOME_DIR="/home/bns/.local/share/swiftly"
-export SWIFTLY_BIN_DIR="/home/bns/.local/share/swiftly/bin"
-export SWIFTLY_TOOLCHAINS_DIR="/home/bns/.local/share/swiftly/toolchains"
-
-
-export ENCORE_INSTALL="/home/bns/.encore"
-export ENCORE_BIN="$ENCORE_INSTALL/bin"
-
-
-
+export SWIFTLY_HOME_DIR="$HOME/.local/share/swiftly"
+export SWIFTLY_BIN_DIR="$SWIFTLY_HOME_DIR/bin"
+export SWIFTLY_TOOLCHAINS_DIR="$SWIFTLY_HOME_DIR/toolchains"
 
 # Starship Promt Setting
-parent_process=$(ps -o comm= -p $(ps -o ppid= -p $$))
-
-if [[ "$parent_process" == "warp" ]]; then
-    export STARSHIP_CONFIG="$OC_BASE/starship/tokiyo-night_palestine.toml"
-else
-    export STARSHIP_CONFIG="$OC_BASE/starship/tokiyo-night_palestine.toml"
-
-fi
-
-
-
+export STARSHIP_CONFIG="$OC_BASE/starship/tokiyo-night_palestine.toml"
 # export STARSHIP_CONFIG="$OC_BASE/starship/tokio-night-edited.toml"
-# export STARSHIP_CONFIG=~/.config/zfunc/starship/pure-preset.toml
-
-# Moduler Mojo
-export MODULAR_HOME="/home/bns/.modular"
-export MODULAR_BIN="$MODULAR_HOME/bin"
+# export STARSHIP_CONFIG="$OC_BASE/starship/pure-preset.toml"
 
 
-#Fly CTL
-export FLYCTL_INSTALL="/home/bns/.fly"
-# export PATH=""
+# ---------------------------------------------------------------------------
+# PATH
+#
+# Every bin directory, highest priority first. Directories that don't exist on
+# this machine are skipped, so it's safe to keep tools listed here that aren't
+# installed yet - they simply never reach PATH.
+# ---------------------------------------------------------------------------
+bin_dirs=(
+  # personal
+  "$HOME/.local/bin"
 
+  # languages & runtimes
+  "/usr/local/go/bin"
+  "$GOPATH/bin"
+  "$BUN_INSTALL/bin"
+  "$DENO_INSTALL/bin"
+  "/usr/local/dart-sdk/bin"
+  "/usr/local/flutter/bin"
+  "/usr/local/zig"
+  "/usr/local/Odin"
+  "$HOME/.nimble/bin"                       # nim
+  "$HOME/.local/v"                          # v
+  "$SWIFTLY_BIN_DIR"
+  "$HOME/.config/herd-lite/bin"             # php (herd lite)
 
-# NVM;
-export NVM_DIR="$HOME/.nvm"
+  # editors
+  "/opt/nvim-linux-x86_64/bin"
 
+  # android sdk
+  "$ANDROID_HOME/emulator"
+  "$ANDROID_HOME/platform-tools"
+  "$ANDROID_HOME/cmdline-tools/latest/bin"
 
-local NVIM_BIN=/opt/nvim-linux-x86_64/bin
+  # cloud & misc tooling
+  "$ENCORE_INSTALL/bin"
+  "$FLYCTL_INSTALL/bin"
+  "$MODULAR_HOME/bin"
+  "$PNPM_HOME"
+  "/home/linuxbrew/.linuxbrew/bin"
+)
 
-local LOCAL_BIN=$HOME/.local/bin # Local BIN
-local BUN_BIN=$BUN_INSTALL/bin # Bun
-local DENO_BIN=$DENO_INSTALL/bin # Deno
+# Keep only the directories that actually exist.
+found_dirs=()
+for dir in $bin_dirs; do
+  if [[ -d "$dir" ]]; then
+    found_dirs+=("$dir")
+  fi
+done
 
-export PNPM_HOME=$HOME/.var/pnpm #pnpm
-export GOPATH=$HOME/.local/bin/go
-local flutter_bin="/usr/local/flutter/bin"
+# Put them in front of the system PATH.
+# `path` is zsh's array view of $PATH - assign one and the other updates.
+# `typeset -U` makes it refuse duplicates, so re-sourcing this file is safe.
+typeset -U path
+path=($found_dirs $path)
+export PATH
 
-
-
-# included (local bin, nvim-bin[by-bob] , golang bin , deno bin, bun bin)
-PATH1=$GOPATH/bin:$BOB_NVIM:$LOCAL_BIN:$GOLANG_BIN:$DENO_BIN:$BUN_BIN:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$ENCORE_BIN:$VLANG_HOME:$ODIN_LANG_HOME
-PATH2=$FLYCTL_INSTALL/bin:$MODULAR_BIN:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$PNPM_HOME:$flutter_bin:$HOMEBREW_BIN:$ZIG_HOME:$NIM_LANG_BIN
-PATH3=$SWIFTLY_BIN_DIR:$DART_SDK_BIN
-
-
-export PATH=$PATH1:$PATH2:$PATH3:$PATH
+unset bin_dirs found_dirs dir

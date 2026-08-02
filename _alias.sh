@@ -6,15 +6,24 @@ alias ls="eza --color=always --icons --group-directories-first --git"
 alias l="eza --color=always --icons --all --group-directories-first --git"
 alias ll="eza --oneline --long --color=always --icons --all --group-directories-first --git"
 
-# Base Director
-BASE="$HOME/.config/os-conf"
-
-# Check if the OS is Fedora or Ubuntu
-if [[ "$OS_ID" == "ubuntu" ]]; then
-  source $BASE"/platform-specific/ubuntu/alias.sh"
-elif [[ "$OS_ID" == "fedora" ]]; then
-  source $BASE"/platform-specific/fedora/alias.sh"
+# ast-grep. `asg` always works; `sg` (the name upstream uses for its own
+# binary) is only taken when nothing on the system provides it, so this
+# can never shadow a real sg that shows up later.
+alias asg="ast-grep"
+if ! command -v sg >/dev/null 2>&1; then
+  alias sg="ast-grep"
 fi
+
+# Load the platform alias file: exact distro id first, then its family.
+# CachyOS has no dir of its own, so it falls through to arch/ via ID_LIKE.
+# ${=OS_LIKE} forces word splitting - ID_LIKE can hold several ids.
+for _os in "$OS_ID" ${=OS_LIKE}; do
+  if [ -f "$OC_BASE/platform-specific/$_os/alias.sh" ]; then
+    source "$OC_BASE/platform-specific/$_os/alias.sh"
+    break
+  fi
+done
+unset _os
 
 #ExrpssVpn Alias
 alias vpn='expressvpn'
@@ -53,13 +62,24 @@ dt(){
 }
 
 
-# clipboard by xclip;
+# clipboard - wl-copy under Wayland, xclip under X11
+oc_clip() {
+  if command -v wl-copy >/dev/null 2>&1; then
+    wl-copy
+  elif command -v xclip >/dev/null 2>&1; then
+    xclip -sel clip
+  else
+    echo "copy: install wl-clipboard (Wayland) or xclip (X11)" >&2
+    return 127
+  fi
+}
+
 copy() {
-  echo $n | xclip -sel clip
+  printf '%s' "$*" | oc_clip
 }
 
 copyfile() {
-  cat $n | xclip -sel clip
+  oc_clip < "$1"
 }
 
 jp() {

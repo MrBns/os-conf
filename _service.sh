@@ -1,11 +1,15 @@
 
 # Cargo Script
-source "$HOME/.cargo/env"
+[ -s "$HOME/.cargo/env" ] && source "$HOME/.cargo/env"
 
 #Evulating Starship ZSH;
-eval "$(starship init zsh)"
+if command -v starship >/dev/null 2>&1; then
+    eval "$(starship init zsh)"
+fi
 
-eval "$(zoxide init zsh --cmd j)"
+if command -v zoxide >/dev/null 2>&1; then
+    eval "$(zoxide init zsh --cmd j)"
+fi
 
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
@@ -17,8 +21,8 @@ if command -v mise >/dev/null 2>&1; then
 fi
 
 
-if [ -f "/home/bns/.nix-profile/etc/profile.d/nix.sh" ]; then
-    source "/home/bns/.nix-profile/etc/profile.d/nix.sh"
+if [ -f "$HOME/.nix-profile/etc/profile.d/nix.sh" ]; then
+    source "$HOME/.nix-profile/etc/profile.d/nix.sh"
 fi
 
 

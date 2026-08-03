@@ -1,45 +1,180 @@
 # ---------------------------------------------------------------------------
 # Server prompt (OC_MODE=server).
 #
-# No nerd-font glyphs, no powerline separators, no background colours - this
-# has to render in a bare TTY, inside tmux and through whatever ssh client is
-# at hand. Colours are the terminal's own 16, so it stays readable whatever
-# theme the client uses.
+# Two lines: everything you want to *read* sits on the top line, and the line
+# you actually type on stays short and at a fixed left margin. Long paths or a
+# noisy git status can no longer push the cursor halfway across the screen, and
+# copied commands never drag half a prompt along with them.
+#
+#   ┌─[bns@cachyos-x8664]─[.../os-conf]─[main ↑1 !2]       [rs v1.83.0] [14:32:07]
+#   └─$ ls
+#
+# No nerd-font glyphs and no background colours - this has to render in a bare
+# TTY, inside tmux and through whatever ssh client is at hand. The frame uses
+# ┌ └ ─, which the kernel console font carries, and every colour is one of the
+# terminal's own 16 so it stays readable whatever theme the client uses.
 #
 # user@host is always shown: a server shell should never look like a local one,
 # and root turns bold red so you notice before you type something regrettable.
 #
-# Only the modules listed in `format` are ever evaluated, so the prompt stays
-# fast - no language/runtime probing on every command.
+# Segment order is deliberate. Left of the gap: who/where first, then repo
+# state, then what the last command cost you - all of it variable-width, so it
+# grows rightward into the fill. Right of the gap: the toolchain of whatever
+# directory you are standing in, then the wall clock last, pinned to the edge
+# so it never shifts as toolchains come and go.
+#
+# Only the modules listed in `format` are ever evaluated. The toolchain modules
+# are the one place this prompt spends real time: each one that matches the
+# current directory shells out to `node -v`, `rustc -V` and so on. They stay
+# dormant until their detect_* files show up, so the cost is paid in project
+# trees and nowhere else - measured here at ~3ms in a plain directory against
+# ~9ms in a tree with three toolchains live. If a slow network mount ever makes
+# that lag, the toolchain block is the thing to trim.
 # ---------------------------------------------------------------------------
 
+# Every segment carries its own separator as a prefix - "─[" on the left half,
+# a plain space on the right - so a segment that does not apply (no repo, no
+# background jobs, a command that exited 0) leaves no dangling separator behind.
+#
+# $fill is what holds the two halves apart: it expands to however much blank
+# space it takes to push everything after it flush against the right edge, so
+# the clock lands on the same column at any terminal width. Both halves stay on
+# the *same* line - the alternative, right_format, is bound by zsh to the last
+# prompt line, which would strand the clock next to the cursor instead.
 format = """
+[┌](bright-black)\
 $username\
 $hostname\
 $directory\
 $git_branch\
 $git_status\
 $cmd_duration\
+$jobs\
 $status\
-$character"""
+$fill\
+$nodejs\
+$bun\
+$deno\
+$python\
+$rust\
+$golang\
+$java\
+$php\
+$ruby\
+$lua\
+$docker_context\
+$time
+[└─](bright-black)$character"""
 
-add_newline = false
+# A blank line before each prompt: on a box where you are reading command
+# output all day, the gap is what makes the prompt findable when scrolling.
+add_newline = true
 command_timeout = 1000
+
+# The gap between the two halves. A blank symbol, not a drawn rule: the empty
+# run is what makes the right half read as a separate column instead of as more
+# of the same line.
+[fill]
+symbol = " "
+
+# --- right half -------------------------------------------------------------
+#
+# Toolchain versions for the current directory. Text labels, not nerd-font
+# icons, for the same reason as the rest of this file.
+
+[nodejs]
+symbol = "node "
+style = "bold green"
+format = " [\\[](bright-black)[$symbol$version]($style)[\\]](bright-black)"
+# Don't announce node in every directory that merely happens to hold a .js file.
+detect_files = ["package.json", ".node-version", ".nvmrc"]
+detect_folders = ["node_modules"]
+detect_extensions = []
+
+[bun]
+symbol = "bun "
+style = "bold white"
+format = " [\\[](bright-black)[$symbol$version]($style)[\\]](bright-black)"
+
+[deno]
+symbol = "deno "
+style = "bold green"
+format = " [\\[](bright-black)[$symbol$version]($style)[\\]](bright-black)"
+
+# $virtualenv matters more than the interpreter version here - it is the thing
+# you get wrong at 2am on a server.
+[python]
+symbol = "py "
+style = "bold yellow"
+format = " [\\[](bright-black)[$symbol$version( $virtualenv)]($style)[\\]](bright-black)"
+
+[rust]
+symbol = "rs "
+style = "bold red"
+format = " [\\[](bright-black)[$symbol$version]($style)[\\]](bright-black)"
+
+[golang]
+symbol = "go "
+style = "bold cyan"
+format = " [\\[](bright-black)[$symbol$version]($style)[\\]](bright-black)"
+
+[java]
+symbol = "java "
+style = "bold red"
+format = " [\\[](bright-black)[$symbol$version]($style)[\\]](bright-black)"
+
+[php]
+symbol = "php "
+style = "bold purple"
+format = " [\\[](bright-black)[$symbol$version]($style)[\\]](bright-black)"
+
+[ruby]
+symbol = "rb "
+style = "bold red"
+format = " [\\[](bright-black)[$symbol$version]($style)[\\]](bright-black)"
+
+[lua]
+symbol = "lua "
+style = "bold blue"
+format = " [\\[](bright-black)[$symbol$version]($style)[\\]](bright-black)"
+
+# Only speaks up when you are pointed at a non-default docker daemon - which on
+# a server is exactly when you want to be told.
+[docker_context]
+symbol = "docker "
+style = "bold blue"
+format = " [\\[](bright-black)[$symbol$context]($style)[\\]](bright-black)"
+only_with_files = false
+
+# Wall clock, not elapsed time. Scrolling back through a session and seeing
+# when each command ran is worth the one line it costs. Kept last so it sits
+# hard against the right edge and never moves as toolchains come and go.
+#
+# Plain white, not bold: one notch quieter than the path and branch, so the
+# clock stays legible without pulling your eye every time the prompt redraws.
+# Not the frame's bright-black - that dims it into the brackets entirely.
+[time]
+disabled = false
+time_format = "%H:%M:%S"
+style = "white"
+format = " [\\[](bright-black)[$time]($style)[\\]](bright-black)"
 
 [username]
 show_always = true
 style_user = "bold cyan"
 style_root = "bold red"
-format = "[$user]($style)"
+format = "[─\\[](bright-black)[$user]($style)"
 
+# Closes the bracket that [username] opened - both modules always render, so
+# the pair can never come apart.
 [hostname]
 ssh_only = false
 style = "bold yellow"
-format = "[@$hostname]($style) "
+format = "[@$hostname]($style)[\\]](bright-black)"
 
 [directory]
 style = "bold blue"
-format = "[$path]($style)[$read_only]($read_only_style) "
+format = "[─\\[](bright-black)[$path]($style)[$read_only]($read_only_style)[\\]](bright-black)"
 truncation_length = 4
 truncation_symbol = ".../"
 read_only = " ro"
@@ -48,22 +183,32 @@ read_only_style = "bold red"
 [git_branch]
 symbol = ""
 style = "bold purple"
-format = "[$branch]($style) "
+format = "[─\\[](bright-black)[$branch]($style)"
 
+# Closes [git_branch]'s bracket. git_status is active for the whole repo, not
+# just a dirty one, so the closing bracket appears exactly when the branch did;
+# the status itself is wrapped in (...) and vanishes on a clean tree.
 [git_status]
 style = "bold red"
-format = "([$all_status$ahead_behind]($style) )"
+format = "([ $all_status$ahead_behind]($style))[\\]](bright-black)"
 
 [cmd_duration]
 min_time = 2000
 style = "yellow"
-format = "[+$duration]($style) "
+format = "[─\\[](bright-black)[took $duration]($style)[\\]](bright-black)"
+
+# Background jobs, easy to forget you left running over an ssh hop.
+[jobs]
+symbol = "&"
+number_threshold = 1
+style = "bold green"
+format = "[─\\[](bright-black)[$symbol$number]($style)[\\]](bright-black)"
 
 # Exit code of the last command - worth seeing on a box you are debugging.
 [status]
 disabled = false
 style = "bold red"
-format = "[$status]($style) "
+format = "[─\\[](bright-black)[!$status]($style)[\\]](bright-black)"
 
 [character]
 success_symbol = "[\\$](bold green)"

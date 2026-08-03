@@ -72,7 +72,7 @@ bin_dirs=(
 
 # Keep only the directories that actually exist.
 found_dirs=()
-for dir in $bin_dirs; do
+for dir in "${bin_dirs[@]}"; do
   if [[ -d "$dir" ]]; then
     found_dirs+=("$dir")
   fi
@@ -82,7 +82,7 @@ done
 # `path` is zsh's array view of $PATH - assign one and the other updates.
 # `typeset -U` makes it refuse duplicates, so re-sourcing this file is safe.
 typeset -U path
-path=($found_dirs $path)
+path=("${found_dirs[@]}" "${path[@]}")
 export PATH
 
 unset bin_dirs found_dirs dir

@@ -1,0 +1,15 @@
+# ShellCheck config for this repo.
+#
+# These files are zsh, and ShellCheck has no zsh support - it lints them as if
+# they were bash. The checks below are categorically wrong here rather than
+# things worth fixing, so they are off repo-wide. Anything still reported is
+# a real finding worth reading.
+
+# SC2148: "add a shebang". Every file here is a fragment sourced by index.sh
+#         into an already-running zsh. A shebang would be misleading - none of
+#         them is ever executed directly.
+# SC1090: "can't follow non-constant source". The platform/mode files are
+#         resolved at runtime from $OS_ID and $OC_MODE. That is the design.
+# SC1091: "not following <file>". Points at things outside the repo entirely -
+#         /etc/os-release, ~/.cargo/env, ~/.nvm/nvm.sh, your untracked local.sh.
+disable=SC2148,SC1090,SC1091

@@ -50,55 +50,55 @@ br(){
 }
 
 
+# Zoxide helpers. Each one comes as a pair:
+#   j*   - take the best match for the query
+#   ji*  - list the matches and pick one interactively (needs fzf)
+#
+# The *pwd pair only *prints* the path - it never moves you. Built on
+# `zoxide query` rather than j/ji for exactly that reason: j and ji cd by
+# definition, query just resolves. Prints to stdout so it composes:
+#   cd "$(jipwd)"      ls "$(jpwd conf)"      cp file "$(jipwd)"
 jpwd() {
-  PREV_DIR=$(pwd)
-  j $1
-  pwd
+  zoxide query -- "$@"
 }
 
-jpwd() {
-  PREV_DIR=$(pwd)
-  ji $1
-  pwd
+jipwd() {
+  zoxide query -i -- "$@"
 }
 
-# Open Zoxide Hisotry folder with Nvim
+# The *nvim pair opens the folder in nvim. The cd runs inside a subshell, so
+# nvim gets the directory as its own cwd - which is what LSP root detection
+# and :find rely on - while your shell never moves and needs no cd back.
+# zoxide's chpwd hook still fires in there, so the folder keeps its score.
 jnvim() {
-  PREV_DIR=$(pwd)
+  local dir
+  dir=$(zoxide query -- "$@") || return
+  (cd "$dir" && nvim .)
+}
 
-  ji "$1"
-
-  if [ $? -ne 0 ]; then
-    echo "Stopped by User"
-    return 130
-  fi
-
-  wait
-  nvim "$(pwd)"
+jinvim() {
+  local dir
+  dir=$(zoxide query -i -- "$@") || return
+  (cd "$dir" && nvim .)
 }
 
 
 # Alias for git
 
 gitsub(){
-    git submodule $@
+    git submodule "$@"
 }
 
 gitac() {
-  git add $1
+  git add "$1"
   git commit -m "$2"
 }
 
-# The per-account identity switchers live in local.sh - they carry email
-# addresses and this repo is public. See local.example.sh.
-gitUser(){
-  git config --get user.name
-  git config --get user.email
-}
+
 
 # initialization stuff;
 init_ctp(){
-  mkdir  $cwd+'.bin'
+  mkdir  "$(pwd)"+'.bin'
   touch "input.txt"
   touch 'output.txt'
 }
@@ -112,5 +112,8 @@ reboot(){
 }
 
 killPort() {
-  sudo kill -9 $(sudo lsof -t -i:$1)
+  # The command substitution is deliberately unquoted - lsof prints one PID per
+  # line and every one of them has to reach kill as a separate argument.
+  # shellcheck disable=SC2046
+  sudo kill -9 $(sudo lsof -t -i:"$1")
 }

@@ -41,53 +41,30 @@ copyfile() {
   oc_clip < "$1"
 }
 
+# Pick a folder out of the zoxide history and hand it to a GUI app.
+#
+# Same shape as jnvim/jinvim in _alias.sh: `zoxide query -i` resolves the path
+# without moving you, then the app is launched from inside a subshell so it
+# inherits the folder as its working directory. Your own shell stays put, so
+# there is nothing to cd back from.
+
 # Open Zoxide history folder with code
 jcode() {
-  PREV_DIR=$(pwd)
-
-  ji "$1"
-
-  if [ $? -ne 0 ]; then
-    echo "Stopped by User"
-    return 130
-  fi
-
-  wait
-  code "$(pwd)"
-
-  wait
-  cd $PREV_DIR
+  local dir
+  dir=$(zoxide query -i -- "$@") || return
+  (cd "$dir" && code .)
 }
 
 # Open Zoxide history folder with zed
 jzed() {
-  PREV_DIR=$(pwd)
-
-  ji "$1"
-
-  if [ $? -ne 0 ]; then
-    echo "Stopped by User"
-    return 130
-  fi
-
-  wait
-  zed "$(pwd)"
-
-  wait
-  cd $PREV_DIR
+  local dir
+  dir=$(zoxide query -i -- "$@") || return
+  (cd "$dir" && zed .)
 }
 
-#Open folder from Zoxide history
+# Open folder from Zoxide history in the file manager
 jopen() {
-  PREV_DIR=$(pwd)
-
-  ji "$1"
-
-  if [ $? -ne 0 ]; then
-    echo "Stopped by User"
-    return 130
-  fi
-
-  wait
-  xdg-open "$(pwd)"
+  local dir
+  dir=$(zoxide query -i -- "$@") || return
+  (cd "$dir" && xdg-open .)
 }

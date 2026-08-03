@@ -19,9 +19,14 @@ export SWIFTLY_BIN_DIR="$SWIFTLY_HOME_DIR/bin"
 export SWIFTLY_TOOLCHAINS_DIR="$SWIFTLY_HOME_DIR/toolchains"
 
 # Starship Promt Setting
-export STARSHIP_CONFIG="$OC_BASE/starship/tokiyo-night_palestine.toml"
-# export STARSHIP_CONFIG="$OC_BASE/starship/tokio-night-edited.toml"
-# export STARSHIP_CONFIG="$OC_BASE/starship/pure-preset.toml"
+# Server gets a plain, nerd-font-free prompt that survives a bare TTY.
+if oc_is_server; then
+  export STARSHIP_CONFIG="$OC_SRC/starship/server.toml"
+else
+  export STARSHIP_CONFIG="$OC_SRC/starship/tokiyo-night_palestine.toml"
+  # export STARSHIP_CONFIG="$OC_SRC/starship/tokio-night-edited.toml"
+  # export STARSHIP_CONFIG="$OC_SRC/starship/pure-preset.toml"
+fi
 
 
 # ---------------------------------------------------------------------------

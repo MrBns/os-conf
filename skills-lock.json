@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "skills": {
+    "better-plan": {
+      "source": "mrbns/plankit",
+      "sourceType": "github",
+      "skillPath": "skills/better-plan/SKILL.md",
+      "computedHash": "c1ad6ca9a4a78d6fa403ad2c051bb205ca2e7a53ce368e58be84712857450f95"
+    },
+    "git-commit": {
+      "source": "mrbns/plankit",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/git-commit/SKILL.md",
+      "computedHash": "9f432f24a5838c5c9d3c3632e0ed69e2ab5b4d151028304a99e400031bd570bf"
+    }
+  }
+}

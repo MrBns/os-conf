@@ -45,5 +45,8 @@ alias updates="checkupdates"          # list pending updates without syncing
 alias pacclean="sudo paccache -rk2"   # keep last 2 versions in the cache
 alias pacnew="sudo pacdiff"           # merge .pacnew / .pacsave files
 
-# vim for nvim
-alias vim="nvim"
+# vim for nvim - only when nvim is actually here, otherwise this breaks vim
+# itself on a bare box.
+if command -v nvim >/dev/null 2>&1; then
+  alias vim="nvim"
+fi

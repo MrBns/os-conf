@@ -3,3 +3,12 @@
 Cargo.toml
 go.mod
 package.json
+
+# Machine-local overrides. Holds the things that must never reach a public
+# repo: email addresses, client paths, anything machine-specific.
+# See local.example.sh.
+local.sh
+
+
+.agents/skills/**
+.claude/

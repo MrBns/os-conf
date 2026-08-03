@@ -1,0 +1,28 @@
+// ---------------------------------------------------------------------------
+// Machine role - the Amber counterpart of the OC_MODE block in index.sh.
+//
+// desktop - the full setup: themed prompt, GUI editors, clipboard, VPN.
+// server  - the trimmed setup for a VPS: plain prompt, none of the GUI bits.
+//
+// Pre-set OC_MODE in the environment to pick one; desktop is the default.
+// An unrecognised value warns on stderr and falls back to desktop, so the
+// warning never lands in the config being printed on stdout.
+// ---------------------------------------------------------------------------
+
+import { env_or } from "./platform.ab"
+import { warn } from "./cli.ab"
+
+pub const MODE_DESKTOP = "desktop"
+pub const MODE_SERVER = "server"
+
+/// The validated machine role.
+pub fun oc_mode(): Text {
+    const requested = env_or("OC_MODE", MODE_DESKTOP)
+
+    if requested == MODE_DESKTOP or requested == MODE_SERVER {
+        return requested
+    }
+
+    warn("os-conf: unknown OC_MODE \"{requested}\" - falling back to desktop")
+    return MODE_DESKTOP
+}

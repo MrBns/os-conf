@@ -1,0 +1,21 @@
+// ---------------------------------------------------------------------------
+// gituser - print the git identity in effect here.
+//
+// Equivalent of the `gitUser` function in src/_alias.sh. The per-account
+// switchers are deliberately absent: they carry email addresses and this repo
+// is public, so they live in the machine-local override module instead. See
+// local.example.ab.
+// ---------------------------------------------------------------------------
+
+import { die } from "../lib/cli.ab"
+
+main {
+    const name = $ git config --get user.name $ failed {
+        die("gitUser: no user.name set (and not in a git repository?)", 1)
+    }
+    const email = $ git config --get user.email $ failed {
+        die("gitUser: no user.email set.", 1)
+    }
+    echo(name)
+    echo(email)
+}

@@ -1,0 +1,69 @@
+// ---------------------------------------------------------------------------
+// Equivalent of platform-specific/arch/alias.sh
+//
+// Reached by CachyOS too - it has no platform file of its own and falls
+// through to `arch` via ID_LIKE.
+// ---------------------------------------------------------------------------
+
+import { is_command } from "std/env"
+import {
+    emit_section,
+    emit_comment,
+    emit_alias,
+    emit_bin_func,
+    emit_line,
+} from "../../lib/emit.ab"
+
+pub fun emit_arch(): Null {
+    emit_section("Pacman - base word `spa` (sudo pacman)")
+    emit_comment("The read-only ones (spas/spaq/spaf) keep the same base for muscle memory")
+    emit_comment("even though they don't need sudo - only the writing ones actually use it.")
+    emit_alias("spa", "sudo pacman")
+    emit_alias("spau", "sudo pacman -Syu")      // sync + upgrade everything
+    emit_alias("spai", "sudo pacman -S")        // install
+    emit_alias("spar", "sudo pacman -Rns")      // remove + unused deps + config
+    emit_alias("spac", "sudo pacman -Sc")       // clean package cache
+
+    emit_alias("spas", "pacman -Ss")            // search repos
+    emit_alias("spaq", "pacman -Qs")            // search installed
+    emit_alias("spaf", "pacman -F")             // which package owns a file
+
+    emit_line("")
+    emit_comment("Remove orphans - packages nothing depends on any more.")
+    emit_bin_func("spao", "spao")
+
+    emit_line("")
+    emit_comment("paru is intentionally not aliased - it is already short, needs no sudo, and")
+    emit_comment("the short p* namespace collides with real commands (pr, ps).")
+    emit_comment("Use it directly:  paru -S <pkg>   paru -Syu   paru -Ss <term>")
+
+    emit_section("CachyOS specific")
+    if is_command("cachyos-rate-mirrors") {
+        emit_alias("mirrors", "sudo cachyos-rate-mirrors")
+    } else {
+        emit_comment("skipped (not installed): cachyos-rate-mirrors")
+    }
+    if is_command("chwd") {
+        emit_alias("hw", "chwd")                // hardware driver tool
+    } else {
+        emit_comment("skipped (not installed): chwd")
+    }
+
+    emit_section("pacman-contrib helpers")
+    emit_alias("updates", "checkupdates")       // list pending updates without syncing
+    emit_alias("pacclean", "sudo paccache -rk2")// keep last 2 versions in the cache
+    emit_alias("pacnew", "sudo pacdiff")        // merge .pacnew / .pacsave files
+
+    emit_line("")
+    emit_comment("vim for nvim - only when nvim is actually here, otherwise this breaks vim")
+    emit_comment("itself on a bare box.")
+    if is_command("nvim") {
+        emit_alias("vim", "nvim")
+    } else {
+        emit_comment("skipped (not installed): nvim")
+    }
+}
+
+main {
+    emit_arch()
+}

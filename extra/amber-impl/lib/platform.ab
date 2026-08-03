@@ -1,0 +1,66 @@
+// ---------------------------------------------------------------------------
+// Distro detection - the Amber counterpart of the /etc/os-release block at the
+// top of index.sh.
+//
+// os_id()   - exact distro id   (cachyos, fedora, ubuntu, ...)
+// os_like() - the family it derives from (arch, debian, ...) - may hold several
+//
+// Pre-setting OS_ID in the environment still forces a platform, exactly as the
+// zsh version allows.
+// ---------------------------------------------------------------------------
+
+import { file_exists, file_read } from "std/fs"
+import { split_lines, split_words, starts_with, slice, replace, trim } from "std/text"
+import { env_var_get } from "std/env"
+
+const OS_RELEASE = "/etc/os-release"
+
+/// Reads a key out of /etc/os-release, with surrounding quotes stripped.
+/// Returns "" when the file or the key is missing.
+fun os_release_value(key: Text): Text {
+    if not file_exists(OS_RELEASE): return ""
+
+    const content = file_read(OS_RELEASE) failed {
+        return ""
+    }
+
+    for raw in split_lines(content) {
+        const line = trim(raw)
+        if starts_with(line, "{key}=") {
+            const value = slice(line, len(key) + 1)
+            return trim(replace(value, "\"", ""))
+        }
+    }
+
+    return ""
+}
+
+/// Returns an environment variable, or `fallback` when unset or empty.
+pub fun env_or(name: Text, fallback: Text): Text {
+    const value = env_var_get(name) failed {
+        return fallback
+    }
+    if value == "": return fallback
+    return value
+}
+
+/// The exact distro id. An OS_ID already present in the environment wins.
+pub fun os_id(): Text {
+    return env_or("OS_ID", os_release_value("ID"))
+}
+
+/// The distro family. May hold several ids separated by spaces.
+pub fun os_like(): Text {
+    return env_or("OS_LIKE", os_release_value("ID_LIKE"))
+}
+
+/// The platform names to try, most specific first: the exact id, then every
+/// entry of ID_LIKE. CachyOS has no platform file of its own, so it falls
+/// through to `arch` via ID_LIKE - the same fallthrough _alias.sh relies on.
+pub fun platform_candidates(): [Text] {
+    let candidates = [os_id()]
+    for family in split_words(os_like()) {
+        candidates += [family]
+    }
+    return candidates
+}

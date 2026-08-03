@@ -1,0 +1,166 @@
+// ---------------------------------------------------------------------------
+// Equivalent of _alias.sh - the aliases and functions shared by every mode.
+//
+// Aliases are pure shell state, so they are printed rather than executed.
+// The shell functions of the original split into two groups:
+//
+//   * anything whose only job is to run a program is a real Amber program in
+//     `bin/`, and what gets printed here is a one-line wrapper calling it
+//   * anything that must mutate the calling shell (`jpwd` changes the working
+//     directory) stays a printed zsh function, because no subprocess can do
+//     that
+// ---------------------------------------------------------------------------
+
+import { is_command } from "std/env"
+import {
+    emit_section,
+    emit_comment,
+    emit_alias,
+    emit_func,
+    emit_func_line,
+    emit_bin_func,
+    emit_line,
+} from "../lib/emit.ab"
+import { platform_candidates } from "../lib/platform.ab"
+import { emit_arch } from "./platform/arch.ab"
+import { emit_fedora } from "./platform/fedora.ab"
+import { emit_ubuntu } from "./platform/ubuntu.ab"
+
+fun emit_core_aliases(): Null {
+    emit_section("Core aliases")
+    emit_alias("python", "python3")
+    emit_alias("py", "python3")
+
+    emit_line("")
+    emit_comment("eza when it is installed, plain ls when it is not - a fresh VPS usually is not.")
+    if is_command("eza") {
+        emit_alias("ls", "eza --color=always --icons --group-directories-first --git")
+        emit_alias("l", "eza --color=always --icons --all --group-directories-first --git")
+        emit_alias("ll", "eza --oneline --long --color=always --icons --all --group-directories-first --git")
+    } else {
+        emit_alias("ls", "ls --color=auto")
+        emit_alias("l", "command ls --color=auto -A")
+        emit_alias("ll", "command ls --color=auto -lAh")
+    }
+
+    emit_line("")
+    emit_comment("ast-grep. `asg` always works; `sg` (the name upstream uses for its own")
+    emit_comment("binary) is only taken when nothing on the system provides it, so this")
+    emit_comment("can never shadow a real sg that shows up later.")
+    emit_alias("asg", "ast-grep")
+    if not is_command("sg") {
+        emit_alias("sg", "ast-grep")
+    } else {
+        emit_comment("skipped: a real `sg` is already on PATH")
+    }
+}
+
+/// Loads the platform aliases: exact distro id first, then its family.
+/// CachyOS has no module of its own, so it falls through to arch via ID_LIKE.
+fun emit_platform_aliases(): Null {
+    let loaded = false
+    for candidate in platform_candidates() {
+        if not loaded {
+            if {
+                candidate == "arch": {
+                    emit_arch()
+                    loaded = true
+                }
+                candidate == "fedora": {
+                    emit_fedora()
+                    loaded = true
+                }
+                candidate == "ubuntu": {
+                    emit_ubuntu()
+                    loaded = true
+                }
+            }
+        }
+    }
+    if not loaded {
+        emit_section("Platform aliases")
+        emit_comment("No platform module for this system - nothing loaded.")
+    }
+}
+
+fun emit_tool_aliases(): Null {
+    emit_section("Rust / cargo")
+    emit_alias("cr", "cargo run")
+    emit_alias("crq", "cargo run -q")
+    emit_alias("crr", "cargo run  --  ")
+
+    emit_section("System")
+    emit_comment("systemctl with sudo baked in")
+    emit_alias("sctl", "sudo systemctl")
+    emit_comment("adding sudo by default")
+    emit_alias("ufw", "sudo ufw")
+
+    emit_section("JS runtimes")
+    emit_func_line("br", "bun run \"$@\"")
+    emit_func_line("dt", "deno task \"$@\"")
+}
+
+/// zoxide jumping that every mode gets.
+///
+/// `jpwd` moves the calling shell, which a subprocess cannot do, so it stays a
+/// zsh function. `jnvim` only needs the directory the user picked, so
+/// bin/jump.ab resolves it - exiting 130 when the picker is cancelled, the
+/// same code the original returned on "Stopped by User".
+fun emit_jumping(): Null {
+    emit_section("zoxide jumping")
+    emit_comment("Moves the calling shell, so it cannot be a subprocess.")
+    emit_func("jpwd", [
+        "PREV_DIR=$(pwd)",
+        "ji \"$1\"",
+        "pwd",
+    ])
+
+    emit_line("")
+    emit_comment("jnvim leaves the shell in the picked directory, as the original did.")
+    emit_func("jnvim", [
+        "local dir",
+        "dir=$(\"$OC_AMBER_BIN/jump\" \"$1\") || return $?",
+        "cd \"$dir\" || return $?",
+        "nvim \"$dir\"",
+    ])
+}
+
+fun emit_git(): Null {
+    emit_section("git")
+    emit_func_line("gitsub", "git submodule \"$@\"")
+    emit_bin_func("gitac", "gac")
+
+    emit_line("")
+    emit_comment("The per-account identity switchers live in the local override module -")
+    emit_comment("they carry email addresses and this repo is public. See local.example.ab.")
+    emit_bin_func("gitUser", "gituser")
+}
+
+fun emit_misc(): Null {
+    emit_section("Misc")
+    emit_comment("Competitive-programming scaffold: .bin/ plus input/output files.")
+    emit_bin_func("init_ctp", "initctp")
+
+    emit_line("")
+    emit_comment("Power. These shadow the real commands on purpose.")
+    emit_func_line("poweroff", "sudo systemctl poweroff")
+    emit_func_line("reboot", "sudo systemctl reboot")
+
+    emit_line("")
+    emit_comment("Kill whatever is listening on a port.")
+    emit_bin_func("killPort", "killport")
+}
+
+/// Prints the whole _alias.sh equivalent.
+pub fun emit_aliases(): Null {
+    emit_core_aliases()
+    emit_platform_aliases()
+    emit_tool_aliases()
+    emit_jumping()
+    emit_git()
+    emit_misc()
+}
+
+main {
+    emit_aliases()
+}

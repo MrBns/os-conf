@@ -1,0 +1,19 @@
+// ---------------------------------------------------------------------------
+// Equivalent of _options.sh
+//
+// The zsh original is an empty placeholder kept in the source order so that
+// shell options have an obvious home. This mirrors it: nothing is emitted yet,
+// and `setopt` / `unsetopt` lines belong here when they appear.
+// ---------------------------------------------------------------------------
+
+import { emit_section, emit_comment } from "../lib/emit.ab"
+
+/// Prints the whole _options.sh equivalent.
+pub fun emit_options(): Null {
+    emit_section("Shell options")
+    emit_comment("Nothing set yet - `setopt` / `unsetopt` lines belong here.")
+}
+
+main {
+    emit_options()
+}

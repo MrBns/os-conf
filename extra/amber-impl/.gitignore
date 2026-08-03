@@ -1,0 +1,7 @@
+# Compiled output - regenerate with ./build.sh
+build/
+
+# Machine-local overrides, the Amber counterpart of ../local.sh.
+# Holds the things that must never reach a public repo: email addresses,
+# client paths, anything machine-specific. See local.example.ab.
+local.ab

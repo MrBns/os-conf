@@ -1,0 +1,76 @@
+// ---------------------------------------------------------------------------
+// Emission primitives.
+//
+// An Amber program is compiled to a shell script that runs in its own process,
+// so it can never mutate the calling shell (aliases, exports, PATH, cwd).
+// The config therefore *prints* the zsh it wants installed and the caller
+// evaluates it:
+//
+//     eval "$(~/.config/os-conf/amber-impl/build/index)"
+//
+// Everything in here exists to make that printing readable at the call site.
+//
+// Escaping rules of Amber's Text interpolation, since they bite constantly:
+//   `{`  must be written `\{`      (`}` is written plainly)
+//   `"`  must be written `\"`
+//   `$`  is literal, no escape needed
+// ---------------------------------------------------------------------------
+
+/// Prints a raw line of shell verbatim.
+pub fun emit_line(text: Text): Null {
+    echo(text)
+}
+
+/// Prints an empty line.
+pub fun emit_blank(): Null {
+    echo("")
+}
+
+/// Prints a `#` comment.
+pub fun emit_comment(text: Text): Null {
+    echo("# {text}")
+}
+
+/// Prints a banner comment, used to keep the generated file navigable.
+pub fun emit_section(title: Text): Null {
+    echo("")
+    echo("# ---------------------------------------------------------------------------")
+    echo("# {title}")
+    echo("# ---------------------------------------------------------------------------")
+}
+
+/// Prints `alias name="body"`.
+pub fun emit_alias(name: Text, body: Text): Null {
+    echo("alias {name}=\"{body}\"")
+}
+
+/// Prints `export NAME="value"`.
+pub fun emit_export(name: Text, value: Text): Null {
+    echo("export {name}=\"{value}\"")
+}
+
+/// Prints a zsh function. `body` is emitted one line per element, indented.
+pub fun emit_func(name: Text, body: [Text]): Null {
+    echo("{name}() \{")
+    for statement in body {
+        echo("  {statement}")
+    }
+    echo("}")
+}
+
+/// Prints a one-line zsh function - the common shape for wrappers around the
+/// compiled Amber programs in `build/bin`.
+pub fun emit_func_line(name: Text, statement: Text): Null {
+    echo("{name}() \{ {statement}; }")
+}
+
+/// Prints a function that forwards every argument to a compiled Amber program.
+pub fun emit_bin_func(name: Text, program: Text): Null {
+    emit_func_line(name, "\"$OC_AMBER_BIN/{program}\" \"$@\"")
+}
+
+/// Prints a function that forwards to a compiled Amber program under a fixed
+/// sub-command, then passes the caller's arguments along.
+pub fun emit_bin_func_sub(name: Text, program: Text, subcommand: Text): Null {
+    emit_func_line(name, "\"$OC_AMBER_BIN/{program}\" {subcommand} \"$@\"")
+}

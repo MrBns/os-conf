@@ -1,0 +1,43 @@
+// ---------------------------------------------------------------------------
+// killport <port> - kill whatever is listening on a TCP port.
+//
+// Equivalent of the `killPort` function in _alias.sh, which ran
+//   sudo kill -9 $(sudo lsof -t -i:$1)
+// unconditionally. This version says so and stops when nothing is listening,
+// instead of handing `kill` an empty argument list.
+// ---------------------------------------------------------------------------
+
+import { is_command } from "std/env"
+import { split_lines, trim, parse_int } from "std/text"
+import { die, user_args } from "../lib/cli.ab"
+
+main(args) {
+    const rest = user_args(args)
+    if len(rest) < 1 {
+        die("killPort: usage: killPort <port>", 64)
+    }
+
+    const port = rest[0]
+    const _parsed = parse_int(port) failed {
+        die("killPort: '{port}' is not a port number.", 64)
+    }
+
+    if not is_command("lsof") {
+        die("killPort: lsof is not installed.", 1)
+    }
+
+    // lsof exits 1 when nothing matches, which is not an error here.
+    const found = trim(trust $ sudo lsof -t -i:"{port}" $)
+
+    if found == "" {
+        echo("killPort: nothing is listening on port {port}.")
+        exit(0)
+    }
+
+    const pids = split_lines(found)
+    echo("killPort: killing {len(pids)} process(es) on port {port}.")
+
+    $ sudo kill -9 {pids} $ failed(code) {
+        die("killPort: kill failed (exit {code}).", code)
+    }
+}

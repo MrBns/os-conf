@@ -1,0 +1,81 @@
+// ---------------------------------------------------------------------------
+// Equivalent of mode-specific/desktop/alias.sh
+//
+// Everything here needs a graphical session, a GUI editor or a desktop-only
+// daemon. None of it makes sense on a VPS, so it never gets emitted there.
+// ---------------------------------------------------------------------------
+
+import {
+    emit_section,
+    emit_comment,
+    emit_alias,
+    emit_func,
+    emit_func_line,
+    emit_bin_func_sub,
+    emit_line,
+} from "../../lib/emit.ab"
+
+/// Clipboard. Backend selection (wl-copy under Wayland, xclip under X11) moved
+/// into bin/clip.ab, so these are wrappers - but `oc_clip` keeps its original
+/// meaning of "copy whatever is on stdin".
+fun emit_clipboard(): Null {
+    emit_line("")
+    emit_comment("clipboard - wl-copy under Wayland, xclip under X11")
+    emit_bin_func_sub("oc_clip", "clip", "stdin")
+    emit_bin_func_sub("copy", "clip", "text")
+    emit_bin_func_sub("copyfile", "clip", "file")
+}
+
+/// Pick a directory out of zoxide history, then open it in a GUI program.
+///
+/// The originals cd'd around with `ji` only to learn a path, then cd'd back.
+/// bin/jump.ab resolves the path instead (exit 130 when the picker is
+/// cancelled, as before) and the wrapper acts on the result, so the calling
+/// shell never moves.
+fun emit_gui_jumps(): Null {
+    emit_line("")
+    emit_comment("Open a zoxide history folder in a GUI program.")
+    emit_func("jcode", [
+        "local dir",
+        "dir=$(\"$OC_AMBER_BIN/jump\" \"$1\") || return $?",
+        "code \"$dir\"",
+    ])
+    emit_func("jzed", [
+        "local dir",
+        "dir=$(\"$OC_AMBER_BIN/jump\" \"$1\") || return $?",
+        "zed \"$dir\"",
+    ])
+    emit_func("jopen", [
+        "local dir",
+        "dir=$(\"$OC_AMBER_BIN/jump\" \"$1\") || return $?",
+        "xdg-open \"$dir\"",
+    ])
+}
+
+pub fun emit_desktop(): Null {
+    emit_section("Desktop only (OC_MODE=desktop)")
+
+    emit_comment("ExpressVPN")
+    emit_alias("vpn", "expressvpn")
+    emit_alias("vpnc", "expressvpn connect")
+    emit_alias("vpnd", "expressvpn disconnect")
+    emit_alias("vpns", "expressvpn status")
+
+    emit_line("")
+    emit_comment("Code insider")
+    emit_alias("codei", "code-insiders")
+
+    emit_line("")
+    emit_comment("Jumping")
+    emit_alias("project", "j /mnt/Projects/project")
+
+    emit_line("")
+    emit_func_line("suspend", "sudo systemctl suspend")
+
+    emit_clipboard()
+    emit_gui_jumps()
+}
+
+main {
+    emit_desktop()
+}

@@ -1,0 +1,31 @@
+// ---------------------------------------------------------------------------
+// spao - remove orphans, packages nothing depends on any more.
+//
+// Equivalent of the `spao` function in platform-specific/arch/alias.sh.
+// ---------------------------------------------------------------------------
+
+import { is_command } from "std/env"
+import { split_lines, trim } from "std/text"
+import { die } from "../lib/cli.ab"
+
+main {
+    if not is_command("pacman") {
+        die("spao: pacman is not available on this system.", 1)
+    }
+
+    // pacman exits non-zero when the query matches nothing, which is the
+    // ordinary "no orphans" case rather than an error - hence `trust`.
+    const orphans = trim(trust $ pacman -Qtdq $)
+
+    if orphans == "" {
+        echo("No orphan packages.")
+        exit(0)
+    }
+
+    echo(orphans)
+
+    const packages = split_lines(orphans)
+    $ sudo pacman -Rns {packages} $ failed(code) {
+        die("spao: removal failed (exit {code}).", code)
+    }
+}

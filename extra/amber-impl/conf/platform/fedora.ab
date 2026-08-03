@@ -1,0 +1,36 @@
+// ---------------------------------------------------------------------------
+// Equivalent of platform-specific/fedora/alias.sh
+// ---------------------------------------------------------------------------
+
+import { is_command } from "std/env"
+import {
+    emit_section,
+    emit_comment,
+    emit_alias,
+    emit_line,
+} from "../../lib/emit.ab"
+
+pub fun emit_fedora(): Null {
+    emit_section("dnf")
+    emit_alias("sdur", "sudo dnf update --refresh")
+    emit_alias("sdu", "sudo dnf update")
+    emit_alias("sdug", "sudo dnf upgrade")
+    emit_alias("sdugr", "sudo dnf upgrade --refresh")
+    emit_alias("sdi", "sudo dnf install")
+    emit_alias("sds", "sudo dnf search")
+    emit_alias("sdls", "sudo dnf list")
+    emit_alias("sdgi", "sudo dnf groupinstall")
+
+    emit_line("")
+    emit_comment("vim for nvim - only when nvim is actually here, otherwise this breaks vim")
+    emit_comment("itself on a bare box.")
+    if is_command("nvim") {
+        emit_alias("vim", "nvim")
+    } else {
+        emit_comment("skipped (not installed): nvim")
+    }
+}
+
+main {
+    emit_fedora()
+}

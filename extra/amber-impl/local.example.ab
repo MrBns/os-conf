@@ -1,0 +1,45 @@
+// ---------------------------------------------------------------------------
+// Local overrides - template. The Amber counterpart of local.example.sh.
+//
+// This repo is public, so anything identifying goes here instead of into the
+// tracked files: email addresses, client or employer paths, machine-specific
+// shortcuts.
+//
+//   cp local.example.ab local.ab    # then fill it in, then ./build.sh
+//
+// local.ab is gitignored. build.sh compiles it to build/bin/local when it
+// exists, and index.ab emits an `eval` of it last, so it can override anything
+// the shared modules set. On a machine where it does not exist nothing breaks -
+// index.ab simply emits nothing for it.
+//
+// The plain-zsh local.sh keeps working too: index.ab emits a `source` for it
+// whenever it is present, so you can use either or both.
+// ---------------------------------------------------------------------------
+
+import { emit_section, emit_comment, emit_func, emit_bin_func_sub } from "./lib/emit.ab"
+
+/// Git identities - one wrapper per account you commit as.
+/// `gitUser` (in conf/alias.ab) prints whichever one is currently active.
+///
+/// The wrappers below call bin/gitid.ab, which is not in this repo - write it
+/// the way bin/gituser.ab is written, with a profile table, and add it to
+/// build.sh's loop by dropping it in bin/.
+fun emit_git_identities(): Null {
+    emit_comment("Git identities.")
+    // emit_bin_func_sub("gitMain", "gitid", "main")
+    // emit_bin_func_sub("gitWork", "gitid", "work")
+}
+
+/// Project shortcuts that name a client or a private path.
+fun emit_project_openers(): Null {
+    emit_comment("Project shortcuts.")
+    // emit_func("open_thatproject", [
+    //     "code --profile=Golang /path/to/the/project",
+    // ])
+}
+
+main {
+    emit_section("Machine-local overrides")
+    emit_git_identities()
+    emit_project_openers()
+}

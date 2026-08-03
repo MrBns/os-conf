@@ -1,0 +1,120 @@
+// ---------------------------------------------------------------------------
+// Equivalent of _path.sh
+//
+// Tool environment plus PATH construction.
+//
+// The "keep only directories that exist" filter is real logic, so it runs in
+// Amber - `dir_exists` decides the list and only the survivors are printed.
+// The zsh original relied on `typeset -U path` for de-duplication; that is
+// still emitted, because it is a property of the interactive shell rather than
+// something this program can do for it.
+// ---------------------------------------------------------------------------
+
+import { dir_exists } from "std/fs"
+import { join } from "std/text"
+import {
+    emit_section,
+    emit_comment,
+    emit_export,
+    emit_line,
+} from "../lib/emit.ab"
+import { MODE_SERVER } from "../lib/mode.ab"
+
+/// Every bin directory, highest priority first. Directories that don't exist
+/// on this machine are skipped, so it's safe to keep tools listed here that
+/// aren't installed yet - they simply never reach PATH.
+fun bin_dirs(home: Text): [Text] {
+    return [
+        // personal
+        "{home}/.local/bin",
+
+        // languages & runtimes
+        "/usr/local/go/bin",
+        "{home}/.local/bin/go/bin",           // GOPATH/bin
+        "{home}/.bun/bin",                    // BUN_INSTALL/bin
+        "{home}/.deno/bin",                   // DENO_INSTALL/bin
+        "/usr/local/dart-sdk/bin",
+        "/usr/local/flutter/bin",
+        "/usr/local/zig",
+        "/usr/local/Odin",
+        "{home}/.nimble/bin",                 // nim
+        "{home}/.local/v",                    // v
+        "{home}/.local/share/swiftly/bin",    // SWIFTLY_BIN_DIR
+        "{home}/.config/herd-lite/bin",       // php (herd lite)
+
+        // editors
+        "/opt/nvim-linux-x86_64/bin",
+
+        // android sdk
+        "{home}/.var/Android/Sdk/emulator",
+        "{home}/.var/Android/Sdk/platform-tools",
+        "{home}/.var/Android/Sdk/cmdline-tools/latest/bin",
+
+        // cloud & misc tooling
+        "{home}/.encore/bin",                 // ENCORE_INSTALL/bin
+        "{home}/.fly/bin",                    // FLYCTL_INSTALL/bin
+        "{home}/.modular/bin",                // MODULAR_HOME/bin
+        "{home}/.var/pnpm",                   // PNPM_HOME
+        "/home/linuxbrew/.linuxbrew/bin",
+    ]
+}
+
+/// Only variables a tool actually reads at runtime belong here. Anything that
+/// exists purely to build PATH lives in `bin_dirs` instead.
+fun emit_tool_env(home: Text, oc_src: Text, mode: Text): Null {
+    emit_section("Tool environment")
+    emit_export("ANDROID_HOME", "{home}/.var/Android/Sdk")
+    emit_export("BUN_INSTALL", "{home}/.bun")
+    emit_export("DENO_INSTALL", "{home}/.deno")
+    emit_export("NVM_DIR", "{home}/.nvm")
+    emit_export("PNPM_HOME", "{home}/.var/pnpm")
+    emit_export("GOPATH", "{home}/.local/bin/go")
+    emit_export("MODULAR_HOME", "{home}/.modular")          // Modular / Mojo
+    emit_export("FLYCTL_INSTALL", "{home}/.fly")            // Fly CTL
+    emit_export("ENCORE_INSTALL", "{home}/.encore")
+
+    emit_blank_comment("swift")
+    emit_export("SWIFTLY_HOME_DIR", "{home}/.local/share/swiftly")
+    emit_export("SWIFTLY_BIN_DIR", "{home}/.local/share/swiftly/bin")
+    emit_export("SWIFTLY_TOOLCHAINS_DIR", "{home}/.local/share/swiftly/toolchains")
+
+    emit_blank_comment("Starship prompt setting")
+    emit_comment("Server gets a plain, nerd-font-free prompt that survives a bare TTY.")
+    if mode == MODE_SERVER {
+        emit_export("STARSHIP_CONFIG", "{oc_src}/starship/server.toml")
+    } else {
+        emit_export("STARSHIP_CONFIG", "{oc_src}/starship/tokiyo-night_palestine.toml")
+        emit_comment("export STARSHIP_CONFIG=\"{oc_src}/starship/tokio-night-edited.toml\"")
+        emit_comment("export STARSHIP_CONFIG=\"{oc_src}/starship/pure-preset.toml\"")
+    }
+}
+
+fun emit_blank_comment(title: Text): Null {
+    emit_line("")
+    emit_comment(title)
+}
+
+/// Prints the whole _path.sh equivalent.
+pub fun emit_path(home: Text, oc_src: Text, mode: Text): Null {
+    emit_tool_env(home, oc_src, mode)
+
+    let found = [Text]
+    for dir in bin_dirs(home) {
+        if dir_exists(dir) {
+            found += ["\"{dir}\""]
+        }
+    }
+
+    emit_section("PATH")
+    emit_comment("Resolved by Amber at startup - {len(found)} of {len(bin_dirs(home))} candidates exist.")
+    emit_comment("`path` is zsh's array view of PATH - assign one and the other updates.")
+    emit_comment("`typeset -U` makes it refuse duplicates, so re-evaluating this is safe.")
+    emit_line("typeset -U path")
+    const joined = join(found, " ")
+    emit_line("path=({joined} $path)")
+    emit_line("export PATH")
+}
+
+main {
+    emit_path("/home/user", "/home/user/.config/os-conf/src", "desktop")
+}

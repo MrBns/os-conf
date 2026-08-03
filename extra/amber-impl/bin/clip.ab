@@ -1,0 +1,101 @@
+// ---------------------------------------------------------------------------
+// clip <stdin|text|file> [...] - copy to the system clipboard.
+//
+// Equivalent of `oc_clip`, `copy` and `copyfile` in _alias.sh. The backend
+// choice - wl-copy under Wayland, xclip under X11 - lives here now instead of
+// being repeated in shell.
+//
+//   clip stdin            copy whatever arrives on stdin   (was: oc_clip)
+//   clip text a b c       copy the arguments joined by " " (was: copy)
+//   clip file ./notes.md  copy a file's contents           (was: copyfile)
+// ---------------------------------------------------------------------------
+
+import { is_command } from "std/env"
+import { file_exists } from "std/fs"
+import { join } from "std/text"
+import { die, user_args } from "../lib/cli.ab"
+
+const WAYLAND = "wl-copy"
+const X11 = "xclip"
+const NONE = ""
+
+/// Which clipboard tool to drive. wl-copy wins when both are present.
+fun backend(): Text {
+    if is_command(WAYLAND): return WAYLAND
+    if is_command(X11): return X11
+    return NONE
+}
+
+/// Copies stdin. The two backends take different flags, so they get separate
+/// commands rather than an interpolated program name.
+fun copy_stdin(tool: Text): Null {
+    if tool == WAYLAND {
+        $ {WAYLAND} $ failed(code) {
+            die("clip: wl-copy failed (exit {code}).", code)
+        }
+    } else {
+        $ {X11} -selection clipboard $ failed(code) {
+            die("clip: xclip failed (exit {code}).", code)
+        }
+    }
+}
+
+main(args) {
+    const rest = user_args(args)
+    if len(rest) < 1 {
+        die("clip: usage: clip <stdin|text|file> [...]", 64)
+    }
+
+    // Validate the request before complaining about the environment, so a
+    // typo reports the typo rather than a missing clipboard tool.
+    const mode = rest[0]
+    if mode != "stdin" and mode != "text" and mode != "file" {
+        die("clip: unknown mode '{mode}' - expected stdin, text or file.", 64)
+    }
+    if mode == "file" {
+        if len(rest) < 2 {
+            die("copyfile: usage: copyfile <path>", 64)
+        }
+        if not file_exists(rest[1]) {
+            die("copyfile: no such file: {rest[1]}", 1)
+        }
+    }
+
+    const tool = backend()
+    if tool == NONE {
+        die("copy: install wl-clipboard (Wayland) or xclip (X11)", 127)
+    }
+
+    if mode == "stdin" {
+        copy_stdin(tool)
+        exit(0)
+    }
+
+    if mode == "text" {
+        const payload = join(rest[1..len(rest)], " ")
+        if tool == WAYLAND {
+            $ printf "%s" "{payload}" | {WAYLAND} $ failed(code) {
+                die("clip: wl-copy failed (exit {code}).", code)
+            }
+        } else {
+            $ printf "%s" "{payload}" | {X11} -selection clipboard $ failed(code) {
+                die("clip: xclip failed (exit {code}).", code)
+            }
+        }
+        exit(0)
+    }
+
+    if mode == "file" {
+        const path = rest[1]
+        if tool == WAYLAND {
+            $ {WAYLAND} < "{path}" $ failed(code) {
+                die("clip: wl-copy failed (exit {code}).", code)
+            }
+        } else {
+            $ {X11} -selection clipboard < "{path}" $ failed(code) {
+                die("clip: xclip failed (exit {code}).", code)
+            }
+        }
+        exit(0)
+    }
+}

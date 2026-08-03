@@ -1,0 +1,58 @@
+// ---------------------------------------------------------------------------
+// Equivalent of _service.sh
+//
+// Third-party shell integrations. The zsh original guarded every one of these
+// with `command -v ... >/dev/null` or `[ -s file ]` at startup; here the same
+// checks run in Amber and only the integrations that can actually work are
+// printed. A machine without mise emits no mise line at all instead of a dead
+// branch.
+// ---------------------------------------------------------------------------
+
+import { file_exists } from "std/fs"
+import { is_command } from "std/env"
+import {
+    emit_section,
+    emit_comment,
+    emit_line,
+} from "../lib/emit.ab"
+
+/// `source path` - but only if the file is there.
+fun emit_source_if_exists(path: Text, note: Text): Null {
+    if file_exists(path) {
+        if note != "": emit_comment(note)
+        emit_line("source \"{path}\"")
+    } else {
+        emit_comment("skipped (missing): {path}")
+    }
+}
+
+/// `eval "$(<init>)"` - but only if the command is installed.
+fun emit_eval_init(command: Text, init: Text, note: Text): Null {
+    if is_command(command) {
+        if note != "": emit_comment(note)
+        emit_line("eval \"$({init})\"")
+    } else {
+        emit_comment("skipped (not installed): {command}")
+    }
+}
+
+/// Prints the whole _service.sh equivalent.
+pub fun emit_service(home: Text): Null {
+    emit_section("Shell integrations")
+
+    emit_source_if_exists("{home}/.cargo/env", "Cargo")
+    emit_eval_init("starship", "starship init zsh", "Starship prompt")
+    emit_eval_init("zoxide", "zoxide init zsh --cmd j", "zoxide, bound to `j` / `ji`")
+
+    emit_line("")
+    emit_source_if_exists("{home}/.nvm/nvm.sh", "nvm")
+    emit_source_if_exists("{home}/.nvm/bash_completion", "nvm completion")
+
+    emit_line("")
+    emit_eval_init("mise", "mise activate zsh", "mise")
+    emit_source_if_exists("{home}/.nix-profile/etc/profile.d/nix.sh", "nix")
+}
+
+main {
+    emit_service("/home/bns")
+}

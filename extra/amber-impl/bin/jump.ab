@@ -1,0 +1,44 @@
+// ---------------------------------------------------------------------------
+// jump [query] - pick a directory from zoxide history and print it.
+//
+// Equivalent of the `ji` half of `jcode` / `jzed` / `jnvim` / `jopen` in
+// _alias.sh. Those functions cd'd around with `ji` purely to learn a path;
+// resolving the path is all this does, and the zsh wrappers act on it.
+//
+// Exit codes: 0 with the path on stdout, 130 when the picker is cancelled -
+// the same code the original returned on "Stopped by User".
+//
+// Nothing but the path is ever written to stdout; diagnostics go to stderr.
+// ---------------------------------------------------------------------------
+
+import { is_command } from "std/env"
+import { trim } from "std/text"
+import { die, user_args } from "../lib/cli.ab"
+
+main(args) {
+    if not is_command("zoxide") {
+        die("jump: zoxide is not installed.", 127)
+    }
+
+    const rest = user_args(args)
+    let picked = ""
+
+    // zoxide's interactive picker talks to the terminal directly, so it still
+    // works from inside a command substitution.
+    if len(rest) == 0 or rest[0] == "" {
+        picked = $ zoxide query --interactive $ failed {
+            die("Stopped by User", 130)
+        }
+    } else {
+        picked = $ zoxide query --interactive -- "{rest[0]}" $ failed {
+            die("Stopped by User", 130)
+        }
+    }
+
+    picked = trim(picked)
+    if picked == "" {
+        die("Stopped by User", 130)
+    }
+
+    echo(picked)
+}

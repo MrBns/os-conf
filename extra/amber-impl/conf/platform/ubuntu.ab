@@ -1,0 +1,30 @@
+// ---------------------------------------------------------------------------
+// Equivalent of platform-specific/ubuntu/alias.sh
+// ---------------------------------------------------------------------------
+
+import {
+    emit_section,
+    emit_alias,
+} from "../../lib/emit.ab"
+
+pub fun emit_ubuntu(): Null {
+    emit_section("apt")
+    emit_alias("sapt", "sudo apt-get")
+    emit_alias("sau", "sudo apt update")
+    emit_alias("sagi", "sudo apt install")
+    emit_alias("saug", "sudo apt upgrade")
+    emit_alias("safu", "sudo apt full-upgrade")
+
+    emit_section("nala")
+    emit_alias("sna", "sudo nala")
+    emit_alias("snai", "sudo nala install --fix-broken")
+    emit_alias("snais", "sudo nala install --fix-broken --install-suggests")
+    emit_alias("snau", "sudo nala update")
+    emit_alias("snag", "sudo nala upgrade")
+    emit_alias("snafu", "sudo nala full-upgrade")
+    emit_alias("snar", "sudo nala remove")
+}
+
+main {
+    emit_ubuntu()
+}

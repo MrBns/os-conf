@@ -1,0 +1,22 @@
+// ---------------------------------------------------------------------------
+// gac <pathspec> <message> - git add, then commit.
+//
+// Equivalent of the `gac` function in _alias.sh. The original ran `git commit`
+// even when `git add` had failed; here the `?` operator stops on the first
+// failure and hands the caller git's own exit code.
+// ---------------------------------------------------------------------------
+
+import { die, user_args } from "../lib/cli.ab"
+
+main(args) {
+    const rest = user_args(args)
+    if len(rest) < 2 {
+        die("gac: usage: gac <pathspec> <commit message>", 64)
+    }
+
+    const pathspec = rest[0]
+    const message = rest[1]
+
+    $ git add "{pathspec}" $?
+    $ git commit -m "{message}" $?
+}

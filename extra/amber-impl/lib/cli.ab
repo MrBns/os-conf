@@ -1,0 +1,30 @@
+// ---------------------------------------------------------------------------
+// Small helpers shared by the programs in bin/.
+//
+// Diagnostics go to stderr rather than through std/env's `echo_error`, because
+// some of these programs (bin/jump.ab) have a meaningful stdout that a message
+// must never end up in.
+// ---------------------------------------------------------------------------
+
+/// Writes a line to stderr.
+///
+/// Note the explicit quotes around `{message}`: Amber substitutes an
+/// interpolation into a command unquoted, so without them the shell would word
+/// split the message. Every command in bin/ follows the same rule - quote
+/// scalars, leave arrays bare when separate words are the point.
+pub fun warn(message: Text): Null {
+    trust $ printf "%s\n" "{message}" >&2 $
+}
+
+/// Writes a line to stderr and exits with `code`.
+pub fun die(message: Text, code: Int): Null {
+    warn(message)
+    exit(code)
+}
+
+/// The arguments the user actually typed. `main(args)` puts the shell name in
+/// slot 0, which is never wanted here.
+pub fun user_args(args: [Text]): [Text] {
+    if len(args) < 2: return [Text]
+    return args[1..len(args)]
+}

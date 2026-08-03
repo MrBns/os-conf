@@ -1,0 +1,37 @@
+// ---------------------------------------------------------------------------
+// initctp - scaffold a competitive-programming directory.
+//
+// Equivalent of `init_ctp` in _alias.sh. The original ran
+//   mkdir $cwd+'.bin'
+// with `$cwd` never set, so it created a directory literally named `+.bin`.
+// This creates `.bin` in the current directory, which is what the name meant,
+// and is idempotent instead of erroring when the files already exist.
+// ---------------------------------------------------------------------------
+
+import { dir_create, dir_exists, file_exists } from "std/fs"
+import { die } from "../lib/cli.ab"
+
+const FILES = ["input.txt", "output.txt"]
+
+main {
+    if dir_exists(".bin") {
+        echo("initctp: .bin already exists.")
+    } else {
+        dir_create(".bin") failed(code) {
+            die("initctp: could not create .bin (exit {code}).", code)
+        }
+        echo("initctp: created .bin/")
+    }
+
+    for name in FILES {
+        const existed = file_exists(name)
+        touch(name) failed(code) {
+            die("initctp: could not touch {name} (exit {code}).", code)
+        }
+        if existed {
+            echo("initctp: {name} already existed, timestamp updated.")
+        } else {
+            echo("initctp: created {name}")
+        }
+    }
+}

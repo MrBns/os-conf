@@ -1,0 +1,21 @@
+// ---------------------------------------------------------------------------
+// Equivalent of mode-specific/server/alias.sh
+//
+// Keep this short. A VPS shell should stay close to a stock one - anything
+// added here is something you will have to remember not to rely on when you
+// land on a box that does not have os-conf.
+// ---------------------------------------------------------------------------
+
+import { emit_section, emit_alias } from "../../lib/emit.ab"
+
+pub fun emit_server(): Null {
+    emit_section("Server only (OC_MODE=server)")
+    emit_alias("ports", "sudo ss -tulpn")   // what is listening, and which process owns it
+    emit_alias("jctl", "sudo journalctl")
+    emit_alias("jctlf", "sudo journalctl -f")   // follow everything
+    emit_alias("jctlu", "sudo journalctl -u")   // one unit:  jctlu nginx -f
+}
+
+main {
+    emit_server()
+}

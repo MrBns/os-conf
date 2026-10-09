@@ -37,6 +37,7 @@ source "$OC_SRC/_path.sh"
 source "$OC_SRC/_service.sh"
 source "$OC_SRC/_alias.sh"
 source "$OC_SRC/_options.sh"
+source "$OC_SRC/_terminal.sh"
 
 # Mode file next, so it can override anything the shared files set.
 if [ -f "$OC_SRC/mode-specific/$OC_MODE/alias.sh" ]; then

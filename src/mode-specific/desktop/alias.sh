@@ -14,6 +14,27 @@ alias vpns="expressvpn status"
 # Code insider
 alias codei="code-insiders"
 
+# WSL: send file-manager requests to Windows Explorer.
+if [[ -n ${WSL_DISTRO_NAME:-} || -n ${WSL_INTEROP:-} ]]; then
+  unalias xdg-open 2>/dev/null || :
+
+  function xdg-open {
+    if (( $# > 1 )); then
+      printf 'usage: xdg-open [path-or-url]\n' >&2
+      return 1
+    fi
+
+    local target=${1:-.}
+    # URLs and Windows paths can go straight to Explorer. Linux paths need
+    # conversion, including paths in the distro's own filesystem.
+    case "$target" in
+      *://* | mailto:* | [[:alpha:]]:* | \\\\*) ;;
+      *) target=$(wslpath -w "${target:a}") || return ;;
+    esac
+    command "${OC_WSL_EXPLORER:-/mnt/c/Windows/explorer.exe}" "$target"
+  }
+fi
+
 # Jumping
 alias project="j /mnt/Projects/project"
 

@@ -42,6 +42,7 @@ bin_dirs=(
 
   # languages & runtimes
   "/usr/local/go/bin"
+  "$HOME/.foundry/bin"                    # forge foundry
   "$GOPATH/bin"
   "$BUN_INSTALL/bin"
   "$DENO_INSTALL/bin"
@@ -70,19 +71,12 @@ bin_dirs=(
   "/home/linuxbrew/.linuxbrew/bin"
 )
 
-# Keep only the directories that actually exist.
-found_dirs=()
-for dir in "${bin_dirs[@]}"; do
-  if [[ -d "$dir" ]]; then
-    found_dirs+=("$dir")
-  fi
-done
+# Deduplicate assignments to either view of PATH, keeping the first entry.
+typeset -U PATH path
 
-# Put them in front of the system PATH.
-# `path` is zsh's array view of $PATH - assign one and the other updates.
-# `typeset -U` makes it refuse duplicates, so re-sourcing this file is safe.
-typeset -U path
-path=("${found_dirs[@]}" "${path[@]}")
+# Prepend existing directories in priority order, including directory symlinks.
+# ^ applies the qualifier to each entry; N skips missing paths; -/ follows links.
+path=( ${^bin_dirs}(N-/) "${path[@]}" )
 export PATH
 
-unset bin_dirs found_dirs dir
+unset bin_dirs
